@@ -1,0 +1,12 @@
+"""URL routing for the combat app."""
+
+from django.urls import path
+from combat import views
+
+app_name = "combat"
+
+urlpatterns = [
+    path("", views.arena_view, name="arena"),
+    path("api/attack/", views.attack_endpoint, name="attack"),
+    path("api/leaderboard/", views.leaderboard_endpoint, name="leaderboard"),
+]

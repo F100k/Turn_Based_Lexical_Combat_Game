@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turn-Based Lexical Combat</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 820px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            line-height: 1.5;
+        }
+        .panel {
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            margin: 0.5rem 0;
+        }
+        #combat-log {
+            max-height: 220px;
+            overflow-y: auto;
+            padding-left: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Turn-Based Lexical Combat</h1>
+
+    <section class="panel">
+        <label>
+            Player Name:
+            <input type="text" id="player-name" value="Challenger">
+        </label>
+        <label>
+            Target Topic:
+            <input type="text" id="target-topic" value="{{ default_topic }}">
+        </label>
+        <button type="button" id="reset-btn">New Match</button>
+    </section>
+
+    <section class="panel status-row">
+        <div>
+            <strong>Player HP:</strong> <span id="player-hp">100</span> / 100
+        </div>
+        <div>
+            <strong>Turn:</strong> <span id="turn-number">1</span>
+        </div>
+        <div>
+            <strong>Enemy HP:</strong> <span id="enemy-hp">100</span> / 100
+        </div>
+    </section>
+
+    <section class="panel">
+        <form id="attack-form">
+            {% csrf_token %}
+            <label for="attack-text"><strong>Enter your lexical attack:</strong></label>
+            <textarea id="attack-text" rows="4" placeholder="Craft a phrase aligned with the target topic..."></textarea>
+            <button type="submit" id="attack-btn">Launch Attack</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>Combat Log</h2>
+        <ul id="combat-log"></ul>
+    </section>
+
+    <section class="panel">
+        <h2>Leaderboard</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>Topic</th>
+                    <th>Turns</th>
+                    <th>Score</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+                {% for entry in leaderboard %}
+                <tr>
+                    <td>{{ entry.player_name }}</td>
+                    <td>{{ entry.target_topic }}</td>
+                    <td>{{ entry.turns_taken }}</td>
+                    <td>{{ entry.score }}</td>
+                    <td>{{ entry.status }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No completed matches yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <script>
+        let playerHp = 100;
+        let enemyHp = 100;
+        let turnNumber = 1;
+
+        const form = document.getElementById("attack-form");
+        const attackInput = document.getElementById("attack-text");
+        const attackBtn = document.getElementById("attack-btn");
+        const resetBtn = document.getElementById("reset-btn");
+        const combatLog = document.getElementById("combat-log");
+
+        function getCsrfToken() {
+            return document.querySelector("[name=csrfmiddlewaretoken]").value;
+        }
+
+        function appendLog(message) {
+            const li = document.createElement("li");
+            li.textContent = message;
+            combatLog.prepend(li);
+        }
+
+        function updateStatus() {
+            document.getElementById("player-hp").textContent = playerHp;
+            document.getElementById("enemy-hp").textContent = enemyHp;
+            document.getElementById("turn-number").textContent = turnNumber;
+        }
+
+        resetBtn.addEventListener("click", () => {
+            playerHp = 100;
+            enemyHp = 100;
+            turnNumber = 1;
+            attackBtn.disabled = false;
+            combatLog.innerHTML = "";
+            updateStatus();
+            appendLog("Started a new match.");
+        });
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const attackText = attackInput.value.trim();
+            if (!attackText) {
+                return;
+            }
+
+            const response = await fetch("{% url 'combat:attack' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCsrfToken(),
+                },
+                body: JSON.stringify({
+                    player_name: document.getElementById("player-name").value,
+                    target_topic: document.getElementById("target-topic").value,
+                    attack_text: attackText,
+                    turn_number: turnNumber,
+                    player_hp: playerHp,
+                    enemy_hp: enemyHp,
+                }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                appendLog(`Error: ${data.error || "Request failed."}`);
+                return;
+            }
+
+            playerHp = data.player_hp;
+            enemyHp = data.enemy_hp;
+            appendLog(`Turn ${turnNumber}: You dealt ${data.attack_result.damage} damage.`);
+
+            if (data.enemy_action) {
+                appendLog(`Enemy countered for ${data.enemy_action.damage} damage: "${data.enemy_action.enemy_text}"`);
+            }
+
+            if (data.match_status === "won") {
+                appendLog("Victory! You defeated the enemy.");
+                attackBtn.disabled = true;
+            } else if (data.match_status === "lost") {
+                appendLog("Defeat! Your HP reached 0.");
+                attackBtn.disabled = true;
+            } else {
+                turnNumber += 1;
+            }
+
+            attackInput.value = "";
+            updateStatus();
+        });
+    </script>
+</body>
+</html>
