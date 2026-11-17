@@ -1,0 +1,3 @@
+glove_module/glove.6B.100d.txt
+glove_module/__pycache__/
+glove_module/evaluated_vectors.txt
