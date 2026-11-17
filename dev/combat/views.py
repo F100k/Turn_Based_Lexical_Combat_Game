@@ -12,15 +12,14 @@ from combat.models import MatchHistory
 @require_GET
 def arena_view(request):
     """Render the main turn-based lexical combat arena HTML page."""
-    leaderboard = MatchHistory.objects.exclude(status="active")[:10]
-    return render(
-        request,
-        "combat/arena.html",
-        {
-            "leaderboard": leaderboard,
-            "default_topic": "Science",
-        },
-    )
+    return render(request, "combat/arena.html", {"default_topic": "Science"})
+
+
+@require_GET
+def leaderboard_page(request):
+    """Render the leaderboard HTML page."""
+    entries = MatchHistory.objects.exclude(status="active")[:20]
+    return render(request, "combat/leaderboard.html", {"leaderboard": entries})
 
 
 @require_POST

@@ -7,6 +7,7 @@ app_name = "combat"
 
 urlpatterns = [
     path("", views.arena_view, name="arena"),
+    path("leaderboard/", views.leaderboard_page, name="leaderboard_page"),
     path("api/attack/", views.attack_endpoint, name="attack"),
     path("api/leaderboard/", views.leaderboard_endpoint, name="leaderboard"),
 ]
