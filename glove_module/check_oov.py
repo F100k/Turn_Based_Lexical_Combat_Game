@@ -1,3 +1,4 @@
+import difflib
 import re
 from glove_loader import load_glove_model
 
@@ -43,19 +44,50 @@ def check_corpus_vocabulary(corpus_path, glove_embeddings):
     
     return in_vocab, oov_words
 
+def test_smart_oov_recovery(oov_list, glove_embeddings, sample_size=5):
+    """
+    ทดสอบจำลองเหตุการณ์: ถ้าผู้เล่นพิมพ์คำที่เป็น OOV หรือสะกดผิด 
+    ระบบจะสามารถกู้ชีพโดยการหาคำที่ใกล้เคียงที่สุดใน GloVe มาแทนได้ไหม
+    """
+    print("\n--- Testing Smart OOV Recovery (Fallback System) ---")
+    
+    # ดึงรายชื่อคำทั้งหมดใน GloVe มาเตรียมไว้ให้ difflib ค้นหา
+    known_vocab = list(glove_embeddings.keys())
+    
+    # ลองสุ่มตัวอย่างคำ OOV หรือจำลองคำพิมพ์ผิดของผู้เล่น
+    test_samples = oov_list[:sample_size] if len(oov_list) >= sample_size else oov_list
+    # เพิ่มคำพิมพ์ผิดจำลองเข้าไปเทสด้วย
+    test_samples.extend(["exectiv", "directr", "managr"]) 
+    
+    for word in test_samples:
+        # ใช้ difflib หาคำที่ใกล้เคียงที่สุดใน GloVe (ความเหมือน 60% ขึ้นไป)
+        matches = difflib.get_close_matches(word, known_vocab, n=1, cutoff=0.6)
+        
+        if matches:
+            corrected = matches[0]
+            print(f"  * Player typed [OOV]: '{word}' -> 🛠️ System corrected to: '{corrected}'")
+        else:
+            print(f"  * Player typed [OOV]: '{word}' -> ❌ Too unique, cannot recover.")
+
 if __name__ == "__main__":
-    # กำหนดเส้นทางไฟล์ GloVe และ Corpus ของคุณ
     glove_file = "glove.6B.100d.txt"
     corpus_file = "corpus.txt"
     
     try:
-        # โหลดโมเดล GloVe ที่เราทำไว้ก่อนหน้านี้
+        # โหลดโมเดล GloVe
         glove_embeddings = load_glove_model(glove_file)
         print("-" * 40)
         
-        # รันตรวจสอบคำใน Corpus
+        # รันตรวจสอบคำใน Corpus แบบเดิม
         in_vocab, oov_words = check_corpus_vocabulary(corpus_file, glove_embeddings)
         
+        # --- เพิ่มส่วนนี้เพื่อให้โชว์ผลการกู้ชีพคำผิดชัดเจน ---
+        if oov_words:
+            print("\n" + "=" * 40)
+            print("DEMO: Testing Smart OOV / Spell Correction:")
+            print("=" * 40)
+            test_smart_oov_recovery(oov_words, glove_embeddings)
+        
     except FileNotFoundError as e:
-        print(f"\n[!] not found: {e}")
-        print("check file that glove.6B.100d.txt and corpus.txt in folder glove_module before running again")
+        print(f"\n[!] Not found: {e}")
+        print("Please check if 'glove.6B.100d.txt' and 'corpus.txt' are in the correct folder.")
