@@ -1,0 +1,4 @@
+# Model weights downloaded from Hugging Face / fine-tuned checkpoint
+artifacts/hf_cache/
+artifacts/model/
+__pycache__/
