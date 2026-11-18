@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Python
 __pycache__/
 *.py[cod]
@@ -32,6 +31,8 @@ staticfiles/
 *.pth
 *.onnx
 !dev/ml_artifacts/.gitkeep
+glove_module/glove.6B.100d.txt
+glove_module/evaluated_vectors.txt
 
 # Testing, Coverage & Type Checking
 .coverage
@@ -54,8 +55,3 @@ Desktop.ini
 
 # Scratch / Temporary files
 blank.pdf
-=======
-glove_module/glove.6B.100d.txt
-glove_module/__pycache__/
-glove_module/evaluated_vectors.txt
->>>>>>> main

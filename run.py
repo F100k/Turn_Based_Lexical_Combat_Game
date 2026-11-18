@@ -40,10 +40,26 @@ def main():
     print("[INFO] Applying database migrations...")
     subprocess.run([sys.executable, str(MANAGE_PY), "migrate"], check=True)
 
+    # Detect port availability
+    import socket
+    host = "127.0.0.1"
+    port = 8000
+
+    def is_port_in_use(p):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(0.3)
+            return s.connect_ex((host, p)) == 0
+
+    if is_port_in_use(port):
+        print(f"[WARNING] Port {port} is already in use. Checking for next available port...")
+        while is_port_in_use(port):
+            port += 1
+        print(f"[INFO] Using available port: {port}")
+
     print()
     print("=" * 56)
     print("  Game server is running!")
-    print("  Open your browser at: http://127.0.0.1:8000/")
+    print(f"  Open your browser at: http://{host}:{port}/")
     print("  Press Ctrl+C to stop the server.")
     print("=" * 56)
     print()
@@ -52,17 +68,23 @@ def main():
     def open_browser():
         time.sleep(1.5)
         try:
-            webbrowser.open("http://127.0.0.1:8000/")
+            webbrowser.open(f"http://{host}:{port}/")
         except Exception:
             pass
 
     threading.Thread(target=open_browser, daemon=True).start()
 
-    # Launch Django development server
-    try:
-        subprocess.run([sys.executable, str(MANAGE_PY), "runserver", "127.0.0.1:8000"])
-    except KeyboardInterrupt:
-        print("\n[INFO] Server stopped by user.")
+    # Launch Django development server with monitoring
+    while True:
+        try:
+            res = subprocess.run([sys.executable, str(MANAGE_PY), "runserver", f"{host}:{port}"])
+            if res.returncode == 0:
+                break
+            print(f"\n[ALERT] Server process exited with code {res.returncode}. Restarting in 2s (Ctrl+C to quit)...")
+            time.sleep(2)
+        except KeyboardInterrupt:
+            print("\n[INFO] Server stopped by user.")
+            break
 
 
 if __name__ == "__main__":

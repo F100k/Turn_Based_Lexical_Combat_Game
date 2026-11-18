@@ -1,8 +1,7 @@
-"""App configuration for combat; loads ML artifacts once at startup."""
+"""App configuration for combat; loads NLP models and ML artifacts once at startup."""
 
 import logging
 from django.apps import AppConfig
-from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -15,22 +14,10 @@ class CombatConfig(AppConfig):
     lda_projector = None
 
     def ready(self):
-        """Load serialized ML models once when Django starts."""
-        if CombatConfig.lda_projector is not None:
-            return
-
-        artifact_path = settings.LDA_PROJECTOR_PATH
-        if not artifact_path.exists() or artifact_path.stat().st_size == 0:
-            logger.warning(
-                "ML artifact not found or empty at %s. Running without preloaded model.",
-                artifact_path,
-            )
-            return
-
+        """Initialize NLP models and ML artifacts once when Django starts."""
         try:
-            import joblib
-
-            CombatConfig.lda_projector = joblib.load(artifact_path)
-            logger.info("Loaded LDA projector from %s", artifact_path)
+            from combat.engine import initialize_engines
+            initialize_engines()
+            logger.info("Combat NLP models initialized successfully.")
         except Exception as exc:
-            logger.warning("Failed to load LDA projector from %s: %s", artifact_path, exc)
+            logger.warning("Failed initializing Combat NLP engines: %s", exc)

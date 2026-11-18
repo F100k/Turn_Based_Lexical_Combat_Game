@@ -38,7 +38,13 @@ class SentenceTransformerEncoder:
         folder = Path(folder)
         manifest = json.loads((folder / "manifest.json").read_text(encoding="utf-8"))
         local = folder / "model"
-        source = local if local.is_dir() else manifest.get("model_id", DEFAULT_MODEL)
+        snapshots = list((folder / "hf_cache" / "models--sentence-transformers--all-MiniLM-L6-v2" / "snapshots").glob("*"))
+        if local.is_dir():
+            source = local
+        elif snapshots and snapshots[0].is_dir():
+            source = snapshots[0]
+        else:
+            source = manifest.get("model_id", DEFAULT_MODEL)
         cache_folder = cache_folder or os.environ.get("LEXICAL_ST_CACHE_DIR") or folder / "hf_cache"
         torch_threads = torch_threads or os.environ.get("LEXICAL_TORCH_THREADS")
         encoder = cls(model_name_or_path=source, cache_folder=cache_folder, device=device,
