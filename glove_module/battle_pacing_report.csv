@@ -1,0 +1,7 @@
+Stage,Strategy,Turns Taken,Target Range,Boss Defeated,Pacing Balanced
+1,Typical Play,3,3-6 turns,✅ Yes,✅ PASS
+1,Expert Play,2,3-6 turns,✅ Yes,⚠️ CHECK
+2,Typical Play,3,3-6 turns,✅ Yes,✅ PASS
+2,Expert Play,3,3-6 turns,✅ Yes,✅ PASS
+3,Typical Play,3,2-5 turns,✅ Yes,✅ PASS
+3,Expert Play,2,2-5 turns,❌ No,⚠️ CHECK
