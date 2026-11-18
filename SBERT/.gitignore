@@ -1,0 +1,7 @@
+# Large files, rebuilt by the notebook (cached on Google Drive)
+**/corpus/
+**/models/
+
+# Notebook / Python cache
+.ipynb_checkpoints/
+__pycache__/
