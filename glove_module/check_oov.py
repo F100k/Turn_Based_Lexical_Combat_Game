@@ -17,7 +17,6 @@ def check_corpus_vocabulary(corpus_csv_path, glove_embeddings):
     
     unique_words = set()
     
-    # 1. วนลูปอ่านข้อความจากคอลัมน์ 'text' ใน DataFrame แล้วดึงคำศัพท์ออกมา (ทำความสะอาดด้วย RegEx)
     for text in corpus_df['text'].dropna():
         words = re.findall(r'\b[a-zA-Z]+\b', str(text).lower())
         for w in words:
@@ -25,7 +24,6 @@ def check_corpus_vocabulary(corpus_csv_path, glove_embeddings):
                 
     print(f"Found unique words in Corpus: {len(unique_words):,} words\n")
     
-    # 2. คัดแยกคำที่มี (In-vocab) และคำที่ไม่มี (OOV) ใน GloVe
     in_vocab = []
     oov_words = []
     
@@ -35,7 +33,6 @@ def check_corpus_vocabulary(corpus_csv_path, glove_embeddings):
         else:
             oov_words.append(word)
             
-    # 3. แสดงผลสรุปสถิติ
     total_words = len(unique_words) if len(unique_words) > 0 else 1
     print("=" * 40)
     print(f"Summary of vocabulary check in the corpus:")
@@ -43,7 +40,6 @@ def check_corpus_vocabulary(corpus_csv_path, glove_embeddings):
     print(f" - Out of Vocabulary (OOV / Not in GloVe): {len(oov_words):,} words ({len(oov_words)/total_words*100:.2f}%)")
     print("=" * 40)
     
-    # 4. แสดงตัวอย่างคำที่หลุดโผ (OOV)
     if oov_words:
         print("\nExample (OOV 1st 20 words):")
         print(oov_words[:20])
