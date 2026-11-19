@@ -1,4 +1,4 @@
-"""LexicalCombatEngine: domain gate, target relevance and damage (notebook Section 3.1, pandas-free).
+"""LexicalCombatEngine: domain gate, target relevance and damage (notebook Section 6.1, pandas-free).
 
 The engine only calls ``model.encode(texts, ...)``; an optional ``model.is_known(text)`` enables the
 unknown-word check. It is read-only after construction except for the per-target cache.

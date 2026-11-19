@@ -1,4 +1,4 @@
-"""Text normalisation and input validation (copied from notebook Section 2.1)."""
+"""Text normalisation and input validation (copied from notebook Section 1.4)."""
 
 
 def clean_text(text: str) -> str:

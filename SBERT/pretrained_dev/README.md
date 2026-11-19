@@ -1,63 +1,63 @@
-# pretrained_dev — web-ready scorer for the pretrained Sentence Transformer (MiniLM)
+# pretrained_dev: Web-Ready Scorer for the SBERT Model
 
-Python package that plays the game with the pretrained `sentence-transformers/all-MiniLM-L6-v2` model and the settings calibrated in `pretrained/`, **without the notebook**. It is the step between the research notebook and the Django app in `dev/`.
+This package runs the Lexical Combat Game scoring outside the notebook. It loads the Sentence-BERT model (`sentence-transformers/all-MiniLM-L6-v2`, base or fine-tuned) together with the game settings calibrated in `notebook/`, and provides the interface used by the Django application in `dev/`.
 
-- The model is **pretrained, not trained by us**; only the game thresholds and damage curve were calibrated in the notebook.
-- Same scoring as the notebook: verified against `golden_cases.json` exported by the notebook.
-- `sentence-transformers` / `torch` are imported only by the encoder, so the rest of an app can run without them.
+- The encoder is a pretrained Sentence-BERT model. The notebook optionally fine-tunes it on WordNet pairs and selects the final model (base or fine-tuned) by cross-validation; the selected model is exported with its calibrated domain-gate thresholds and damage curve.
+- The scoring is identical to the notebook. This is verified against `golden_cases.json`, which the notebook exports.
+- `sentence-transformers` and `torch` are imported only by the encoder module, so the remaining modules can be used without them.
 
-## Folder layout
+## Folder Layout
 
 ```
 pretrained_dev/
-├── lexical/                       # the package (copy this into the web project)
-│   ├── __init__.py                # public API: load_game, GameSession, ...
-│   ├── text.py                    # clean_text, validate_player_input (notebook 2.1)
-│   ├── config.py                  # EngineConfig / EngineData + JSON loaders
-│   ├── engine.py                  # LexicalCombatEngine (notebook 3, pandas-free)
-│   ├── target_bank.py             # target screening + random stages (notebook 8)
-│   ├── session.py                 # GameSession, serialisable to a dict (Play Game cell)
-│   ├── loader.py                  # load_game(): builds the engine once per process
+├── lexical/                         # scoring package (copied into the web project)
+│   ├── __init__.py                  # public API: load_game, GameSession, ...
+│   ├── text.py                      # clean_text, validate_player_input (notebook Section 1.4)
+│   ├── config.py                    # EngineConfig, EngineData and JSON loaders
+│   ├── engine.py                    # LexicalCombatEngine (notebook Section 6.1, without pandas)
+│   ├── target_bank.py               # target screening and random stages (notebook Section 6.5c)
+│   ├── session.py                   # GameSession, serialisable to a dict (notebook Appendix A)
+│   ├── loader.py                    # load_game(): builds the engine once per process
 │   ├── encoders/
-│   │   ├── base.py                # Encoder interface
+│   │   ├── base.py                  # Encoder interface
 │   │   └── sentence_transformer.py  # SentenceTransformerEncoder (LRU cache, lazy imports)
-│   └── data/game_data.json        # default game data (same as the notebook)
-├── artifacts/                     # put the notebook export here
-├── tests/                         # unittest suite
-├── play_cli.py                    # terminal game / golden check
+│   └── data/game_data.json          # default game data (same as the notebook)
+├── artifacts/                       # destination for the notebook export
+├── tests/                           # unit tests
+├── play_cli.py                      # terminal game and golden-case check
 └── requirements.txt
 ```
 
-## Step 1 — Export the settings from the notebook
+## Step 1: Export the Model and Settings from the Notebook
 
-1. Open `pretrained/Lexical_Combat_Game_SentenceTransformer_MiniLM.ipynb` in Colab.
-2. In cell 0.1 set `RUN_WEB_EXPORT = True` (keep `LOAD_TUNED_PARAMS = True` so calibration is loaded, not re-run).
-3. Runtime → Run all. Section **10. Export for the web game** writes `MyDrive/lexical_combat/artifacts/web_export/pretrained/`.
-4. Download that folder's files into `pretrained_dev/artifacts/`.
+1. Open `notebook/Lexical_Combat_SBERT_Report.ipynb` in Google Colab.
+2. In cell 0.1, set `RUN_WEB_EXPORT = True`. Keep `TRAIN_FINE_TUNED = "never"` and `LOAD_TUNED_PARAMS = True` so that the saved checkpoint and calibration are reused without retraining.
+3. Select Runtime → Run all. **Appendix B. Export for the web game** writes the files below to `MyDrive/lexical_combat/artifacts/web_export/pretrained/`.
+4. Copy the contents of that folder into `pretrained_dev/artifacts/`.
 
 | File | Content |
 |---|---|
-| `manifest.json` | model id, dim, library versions, file hashes |
+| `manifest.json` | model identifier, embedding dimension, library versions and file hashes |
 | `engine_config.json` | calibrated `EngineConfig` |
-| `game_data.json` | anchors, pools, noise words, stages, bosses |
-| `golden_cases.json` | expected results for parity tests |
-| `model/` | only when `MODEL_CHOICE = "fine_tuned"`: the fine-tuned checkpoint |
+| `game_data.json` | domain anchors, term pools, noise words, stages and bosses |
+| `golden_cases.json` | expected results used by the parity tests |
+| `model/` | fine-tuned checkpoint; exported only when the final model is the fine-tuned one |
 
-The JSON files are small and can be committed. The model weights (~90 MB) are downloaded from Hugging Face on first load into `artifacts/hf_cache/` (git-ignored). Set `HF_HUB_OFFLINE=1` after the first download to never call the network.
+The JSON files are small and may be committed. Model weights are not committed: the fine-tuned checkpoint is stored in `artifacts/model/`, and the base model (about 90 MB) is downloaded from Hugging Face on first use into `artifacts/hf_cache/`. Both folders are listed in `.gitignore`. After the first download, set `HF_HUB_OFFLINE=1` to prevent further network access.
 
-## Step 2 — Install, check and play locally
+## Step 2: Install, Verify and Play Locally
 
 ```bash
-pip install torch --index-url https://download.pytorch.org/whl/cpu   # CPU-only torch (much smaller)
+pip install torch --index-url https://download.pytorch.org/whl/cpu   # CPU-only build of torch
 pip install -r requirements.txt
-python play_cli.py --artifacts artifacts --check   # verify hashes + golden cases + latency
+python play_cli.py --artifacts artifacts --check   # verify file hashes, golden cases and latency
 python play_cli.py --artifacts artifacts           # play in the terminal
-python -m unittest                                  # tests (golden test runs when artifacts/ is filled)
+python -m unittest                                 # run the tests (the golden test requires artifacts/)
 ```
 
-Environment variables: `LEXICAL_ST_CACHE_DIR` (model cache folder), `LEXICAL_TORCH_THREADS` (limit CPU threads).
+Optional environment variables: `LEXICAL_ST_CACHE_DIR` (model cache folder) and `LEXICAL_TORCH_THREADS` (number of CPU threads).
 
-## Step 3 — Use it from code (Django or anything else)
+## Step 3: Use the Package from Code
 
 ```python
 from lexical import GameSession, load_game
@@ -66,10 +66,10 @@ game = load_game("pretrained", "path/to/artifacts")        # load once per proce
 session = GameSession.start(game.eligible, game.game_data.boss_names, rounds=4)
 
 event = session.attack(game.engine, "chief executive")     # one turn
-event["result"]       # gate, relevance, damage, tier, reason (JSON-safe)
+event["result"]       # gate, relevance, damage, tier and reason (JSON-serialisable)
 event["counted"]      # False for invalid guesses
-event["stage_ended"]  # stage log when the boss was defeated
-event["state"]        # what the screen needs: HP, target, topic, turns
+event["stage_ended"]  # stage summary when the boss is defeated
+event["state"]        # data required by the user interface: HP, target, topic and turns
 
 hint = session.hint(game.engine)
 session.skip()
@@ -79,10 +79,9 @@ saved = session.to_dict()                  # store in request.session or a datab
 session = GameSession.from_dict(saved)
 ```
 
-For Django: call `load_game(...)` in `AppConfig.ready()` (or lazily on first request; loading the model takes a few seconds), keep the session dict in `request.session`, and return `event` from the JSON API.
+In Django, call `load_game(...)` in `AppConfig.ready()` or on the first request, since loading the model takes a few seconds. Store the session dictionary in `request.session` and return `event` from the JSON API.
 
 ## Notes
 
-- **Do not edit the scoring code here to change game balance.** Change it in the notebook, re-run calibration and export again, so the notebook and the web game stay identical.
-- `lexical/` is identical in `self_trained_dev/` except for the encoder file, so both backends can later live in one `combat/lexical/` package.
-- MiniLM gives every input a vector (subword tokenizer), so there is no "Unknown word" case here, same as the notebook.
+- **Game balance must not be changed in this package.** Change the settings in the notebook, re-run the calibration and export again, so that the notebook and the web game remain identical.
+- MiniLM uses a subword tokenizer, so every input receives a vector and no "unknown word" case occurs, as in the notebook.
