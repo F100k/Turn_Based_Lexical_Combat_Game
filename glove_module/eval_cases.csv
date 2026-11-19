@@ -1,0 +1,281 @@
+﻿case_id,domain,target,answer,input_type,category,expected_domain,expected_relevance,expected_valid,used_guesses,reason,label_confidence
+E001,Business,executive,ceo,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E002,Business,executive,president,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E003,Business,executive,managing director,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E004,Business,executive,leadership,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E005,Business,executive,boardroom,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E006,Business,executive,accounting,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E007,Business,executive,neural network,phrase,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E008,Business,executive,watercolor,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E009,Business,brand,trademark,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E010,Business,brand,logo,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E011,Business,brand,brand identity,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E012,Business,brand,advertising,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E013,Business,brand,customer loyalty,phrase,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E014,Business,brand,payroll,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E015,Business,brand,molecule,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E016,Business,brand,compiler,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E017,Business,invoice,bill,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E018,Business,invoice,billing statement,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E019,Business,invoice,payment request,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E020,Business,invoice,accounts receivable,phrase,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E021,Business,invoice,payment terms,phrase,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E022,Business,invoice,recruitment,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E023,Business,invoice,telescope,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E024,Business,invoice,violin,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E025,Business,merger,acquisition,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E026,Business,merger,corporate consolidation,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E027,Business,merger,business combination,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E028,Business,merger,takeover,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E029,Business,merger,shareholders,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E030,Business,merger,payroll,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E031,Business,merger,enzyme,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E032,Business,merger,firewall,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E033,Business,budget,spending plan,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E034,Business,budget,financial plan,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E035,Business,budget,cost allocation,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E036,Business,budget,forecast,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E037,Business,budget,expenses,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E038,Business,budget,recruitment,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E039,Business,budget,volcano,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E040,Business,budget,sonata,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E041,Business,supply chain,logistics,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E042,Business,supply chain,procurement,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E043,Business,supply chain,distribution network,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E044,Business,supply chain,inventory,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E045,Business,supply chain,warehouse,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E046,Business,supply chain,dividend,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E047,Business,supply chain,neutron,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E048,Business,supply chain,sculpture,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E049,Technology,algorithm,procedure,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E050,Technology,algorithm,pseudocode,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E051,Technology,algorithm,binary search,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E052,Technology,algorithm,source code,phrase,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E053,Technology,algorithm,optimization,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E054,Technology,algorithm,router,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E055,Technology,algorithm,dividend,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E056,Technology,algorithm,oil painting,phrase,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E057,Technology,email,electronic mail,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E058,Technology,email,inbox,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E059,Technology,email,mail server,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E060,Technology,email,spam filter,phrase,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E061,Technology,email,messaging,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E062,Technology,email,compiler,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E063,Technology,email,symphony,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E064,Technology,email,cash flow,phrase,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E065,Technology,encryption,cryptography,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E066,Technology,encryption,cipher,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E067,Technology,encryption,data protection,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E068,Technology,encryption,secret key,phrase,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E069,Technology,encryption,authentication,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E070,Technology,encryption,processor,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E071,Technology,encryption,ballet,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E072,Technology,encryption,quarterly earnings,phrase,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E073,Technology,compiler,translator,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E074,Technology,compiler,code generation,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E075,Technology,compiler,syntax analysis,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E076,Technology,compiler,debugger,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E077,Technology,compiler,programming,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E078,Technology,compiler,router,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E079,Technology,compiler,enzyme,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E080,Technology,compiler,portrait,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E081,Technology,router,network device,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E082,Technology,router,packet forwarding,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E083,Technology,router,routing table,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E084,Technology,router,internet protocol,phrase,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E085,Technology,router,bandwidth,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E086,Technology,router,spreadsheet,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E087,Technology,router,sculpture,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E088,Technology,router,shareholder,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E089,Technology,database,data storage,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E090,Technology,database,relational tables,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E091,Technology,database,query engine,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E092,Technology,database,sql,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E093,Technology,database,indexing,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E094,Technology,database,firewall,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E095,Technology,database,ballet,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E096,Technology,database,dividend,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E097,Science,catalyst,enzyme,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E098,Science,catalyst,accelerant,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E099,Science,catalyst,reaction rate,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E100,Science,catalyst,activation energy,phrase,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E101,Science,catalyst,chemical compound,phrase,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E102,Science,catalyst,telescope,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E103,Science,catalyst,guitar,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E104,Science,catalyst,quarterly revenue,phrase,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E105,Science,comet,icy body,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E106,Science,comet,celestial object,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E107,Science,comet,solar orbit,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E108,Science,comet,asteroid,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E109,Science,comet,solar system,phrase,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E110,Science,comet,enzyme,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E111,Science,comet,shareholder,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E112,Science,comet,watercolor,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E113,Science,photosynthesis,light conversion,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E114,Science,photosynthesis,chlorophyll,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E115,Science,photosynthesis,carbon fixation,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E116,Science,photosynthesis,sunlight,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E117,Science,photosynthesis,glucose,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E118,Science,photosynthesis,neutron,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E119,Science,photosynthesis,payroll,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E120,Science,photosynthesis,firewall,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E121,Science,gravity,gravitation,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E122,Science,gravity,gravitational attraction,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E123,Science,gravity,falling bodies,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E124,Science,gravity,mass,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E125,Science,gravity,orbit,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E126,Science,gravity,genetics,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E127,Science,gravity,cash flow,phrase,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E128,Science,gravity,compiler,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E129,Science,molecule,bonded atoms,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E130,Science,molecule,chemical entity,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E131,Science,molecule,atomic group,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E132,Science,molecule,chemical bond,phrase,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E133,Science,molecule,compound,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E134,Science,molecule,telescope,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E135,Science,molecule,stock market,phrase,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E136,Science,molecule,violin,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E137,Science,ecosystem,ecological community,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E138,Science,ecosystem,food web,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E139,Science,ecosystem,biotic interactions,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E140,Science,ecosystem,habitat,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E141,Science,ecosystem,biodiversity,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E142,Science,ecosystem,electron,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E143,Science,ecosystem,revenue,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E144,Science,ecosystem,compiler,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E145,Arts,painting,portrait,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E146,Arts,painting,watercolor,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E147,Arts,painting,mural,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E148,Arts,painting,canvas,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E149,Arts,painting,brushstroke,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E150,Arts,painting,symphony,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E151,Arts,painting,algorithm,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E152,Arts,painting,cash flow,phrase,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E153,Arts,cartoon,comic strip,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E154,Arts,cartoon,animated film,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E155,Arts,cartoon,caricature,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E156,Arts,cartoon,illustration,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E157,Arts,cartoon,puppet show,phrase,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E158,Arts,cartoon,sonata,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E159,Arts,cartoon,shareholder,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E160,Arts,cartoon,enzyme,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E161,Arts,symphony,orchestral work,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E162,Arts,symphony,orchestral composition,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E163,Arts,symphony,concert music,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E164,Arts,symphony,orchestra,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E165,Arts,symphony,conductor,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E166,Arts,symphony,watercolor,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E167,Arts,symphony,firewall,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E168,Arts,symphony,balance sheet,phrase,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E169,Arts,sculpture,statue,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E170,Arts,sculpture,carving,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E171,Arts,sculpture,three dimensional art,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E172,Arts,sculpture,clay,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E173,Arts,sculpture,marble,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E174,Arts,sculpture,poetry,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E175,Arts,sculpture,compiler,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E176,Arts,sculpture,shareholder,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E177,Arts,poetry,verse,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E178,Arts,poetry,poem,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E179,Arts,poetry,sonnet,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E180,Arts,poetry,rhyme,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E181,Arts,poetry,metaphor,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E182,Arts,poetry,ballet,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E183,Arts,poetry,database,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E184,Arts,poetry,cash flow,phrase,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E185,Arts,ballet,classical dance,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E186,Arts,ballet,pointe work,phrase,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E187,Arts,ballet,choreography,word,graded_relevance,in_domain,3,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E188,Arts,ballet,dancer,word,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E189,Arts,ballet,stage performance,phrase,graded_relevance,in_domain,2,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E190,Arts,ballet,watercolor,word,graded_relevance,in_domain,1,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,medium
+E191,Arts,ballet,algorithm,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E192,Arts,ballet,dividend,word,cross_domain_negative,out_of_domain,0,TRUE,[],Same-domain relation graded 1 weak / 2 associated / 3 close; negative from a different game domain.,high
+E193,Business,executive,logic,word,context_and_polysemy,ambiguous,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E194,Technology,algorithm,logic,word,context_and_polysemy,ambiguous,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E195,Science,catalyst,logic,word,context_and_polysemy,ambiguous,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E196,Arts,painting,logic,word,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E197,Business,executive,business logic,phrase,context_and_polysemy,ambiguous,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E198,Technology,algorithm,business logic,phrase,context_and_polysemy,in_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E199,Science,catalyst,business logic,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E200,Arts,painting,business logic,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E201,Business,executive,logic gate,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E202,Technology,algorithm,logic gate,phrase,context_and_polysemy,in_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E203,Science,catalyst,logic gate,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E204,Arts,painting,logic gate,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E205,Business,executive,director,word,context_and_polysemy,ambiguous,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E206,Technology,algorithm,director,word,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E207,Science,catalyst,director,word,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E208,Arts,painting,director,word,context_and_polysemy,ambiguous,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E209,Business,executive,film director,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E210,Technology,algorithm,film director,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E211,Science,catalyst,film director,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E212,Arts,painting,film director,phrase,context_and_polysemy,in_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E213,Business,executive,company director,phrase,context_and_polysemy,in_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E214,Technology,algorithm,company director,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E215,Science,catalyst,company director,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E216,Arts,painting,company director,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E217,Business,executive,virus,word,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E218,Technology,algorithm,virus,word,context_and_polysemy,ambiguous,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E219,Science,catalyst,virus,word,context_and_polysemy,ambiguous,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E220,Arts,painting,virus,word,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E221,Business,executive,computer virus,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E222,Technology,algorithm,computer virus,phrase,context_and_polysemy,in_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E223,Science,catalyst,computer virus,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E224,Arts,painting,computer virus,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E225,Business,executive,biological virus,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E226,Technology,algorithm,biological virus,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E227,Science,catalyst,biological virus,phrase,context_and_polysemy,in_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E228,Arts,painting,biological virus,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E229,Business,executive,model,word,context_and_polysemy,ambiguous,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E230,Technology,algorithm,model,word,context_and_polysemy,ambiguous,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E231,Science,catalyst,model,word,context_and_polysemy,ambiguous,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E232,Arts,painting,model,word,context_and_polysemy,ambiguous,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E233,Business,executive,machine learning,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E234,Technology,algorithm,machine learning,phrase,context_and_polysemy,in_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E235,Science,catalyst,machine learning,phrase,context_and_polysemy,ambiguous,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E236,Arts,painting,machine learning,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E237,Business,executive,art auction,phrase,context_and_polysemy,in_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E238,Technology,algorithm,art auction,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E239,Science,catalyst,art auction,phrase,context_and_polysemy,out_of_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E240,Arts,painting,art auction,phrase,context_and_polysemy,in_domain,,TRUE,[],"Context probe: specified usage changes compatible domain; ambiguous means more than one plausible interpretation, not guaranteed secondary gate.",medium
+E241,Business,executive,banana,word,everyday_noise,out_of_domain,0,TRUE,[],Everyday object unrelated to this target; no damage is desirable.,high
+E242,Business,executive,sofa,word,everyday_noise,out_of_domain,0,TRUE,[],Everyday object unrelated to this target; no damage is desirable.,high
+E243,Business,executive,pizza,word,everyday_noise,out_of_domain,0,TRUE,[],Everyday object unrelated to this target; no damage is desirable.,high
+E244,Business,executive,umbrella,word,everyday_noise,out_of_domain,0,TRUE,[],Everyday object unrelated to this target; no damage is desirable.,high
+E245,Technology,algorithm,banana,word,everyday_noise,out_of_domain,0,TRUE,[],Everyday object unrelated to this target; no damage is desirable.,high
+E246,Technology,algorithm,sofa,word,everyday_noise,out_of_domain,0,TRUE,[],Everyday object unrelated to this target; no damage is desirable.,high
+E247,Technology,algorithm,pizza,word,everyday_noise,out_of_domain,0,TRUE,[],Everyday object unrelated to this target; no damage is desirable.,high
+E248,Technology,algorithm,umbrella,word,everyday_noise,out_of_domain,0,TRUE,[],Everyday object unrelated to this target; no damage is desirable.,high
+E249,Science,catalyst,banana,word,everyday_noise,out_of_domain,0,TRUE,[],Everyday object unrelated to this target; no damage is desirable.,high
+E250,Science,catalyst,sofa,word,everyday_noise,out_of_domain,0,TRUE,[],Everyday object unrelated to this target; no damage is desirable.,high
+E251,Science,catalyst,pizza,word,everyday_noise,out_of_domain,0,TRUE,[],Everyday object unrelated to this target; no damage is desirable.,high
+E252,Science,catalyst,umbrella,word,everyday_noise,out_of_domain,0,TRUE,[],Everyday object unrelated to this target; no damage is desirable.,high
+E253,Arts,painting,banana,word,everyday_noise,out_of_domain,0,TRUE,[],Everyday object unrelated to this target; no damage is desirable.,high
+E254,Arts,painting,sofa,word,everyday_noise,out_of_domain,0,TRUE,[],Everyday object unrelated to this target; no damage is desirable.,high
+E255,Arts,painting,pizza,word,everyday_noise,out_of_domain,0,TRUE,[],Everyday object unrelated to this target; no damage is desirable.,high
+E256,Arts,painting,umbrella,word,everyday_noise,out_of_domain,0,TRUE,[],Everyday object unrelated to this target; no damage is desirable.,high
+E257,Business,executive,,word,input_rules,,,FALSE,[],Empty answer,high
+E258,Business,executive,!!!,word,input_rules,,,FALSE,[],No letters,high
+E259,Business,executive,12345,word,input_rules,,,FALSE,[],Numeric only,high
+E260,Business,executive,one two three four,phrase,input_rules,,,FALSE,[],More than three words,high
+E261,Business,executive,executive,word,input_rules,,,FALSE,[],Exact target,high
+E262,Business,executive,chief executive,phrase,input_rules,,,FALSE,[],Contains target token,high
+E263,Business,executive,executives,word,input_rules,,,FALSE,[],Plural target,high
+E264,Business,executive,ceo,word,input_rules,,,FALSE,"[""ceo""]",Exact repeat,high
+E265,Business,executive,directors,word,input_rules,,,FALSE,"[""director""]",Plural repeat,high
+E266,Business,executive,director company,phrase,input_rules,,,FALSE,"[""company director""]",Reordered repeat under current rules,high
+E267,Business,executive,  CEO!! ,word,input_rules,,,TRUE,[],Case/punctuation should normalize to ceo,high
+E268,Business,executive,MANAGING DIRECTOR,phrase,input_rules,,,TRUE,[],Uppercase phrase should normalize,high
+E269,Business,executive,qwzxv,word,junk_negation_typo,,,TRUE,[],"Exploratory: inspect random tokens, partial OOV, negation, token padding or misspelling; no automatic semantic gold.",low
+E270,Business,executive,zxqvplm,word,junk_negation_typo,,,TRUE,[],"Exploratory: inspect random tokens, partial OOV, negation, token padding or misspelling; no automatic semantic gold.",low
+E271,Business,executive,ceo qwzxv,phrase,junk_negation_typo,,,TRUE,[],"Exploratory: inspect random tokens, partial OOV, negation, token padding or misspelling; no automatic semantic gold.",low
+E272,Business,executive,qwzxv director,phrase,junk_negation_typo,,,TRUE,[],"Exploratory: inspect random tokens, partial OOV, negation, token padding or misspelling; no automatic semantic gold.",low
+E273,Business,executive,banana ceo,phrase,junk_negation_typo,,,TRUE,[],"Exploratory: inspect random tokens, partial OOV, negation, token padding or misspelling; no automatic semantic gold.",low
+E274,Business,executive,not ceo,phrase,junk_negation_typo,,,TRUE,[],"Exploratory: inspect random tokens, partial OOV, negation, token padding or misspelling; no automatic semantic gold.",low
+E275,Business,executive,ceo banana director,phrase,junk_negation_typo,,,TRUE,[],"Exploratory: inspect random tokens, partial OOV, negation, token padding or misspelling; no automatic semantic gold.",low
+E276,Business,executive,directr,word,junk_negation_typo,,,TRUE,[],"Exploratory: inspect random tokens, partial OOV, negation, token padding or misspelling; no automatic semantic gold.",low
+E277,Technology,algorithm,ไทย,word,language_normalization,,,TRUE,[],Exploratory language/punctuation behavior; English-only product wording is not enforced by isalpha.,low
+E278,Technology,algorithm,中文,word,language_normalization,,,TRUE,[],Exploratory language/punctuation behavior; English-only product wording is not enforced by isalpha.,low
+E279,Technology,algorithm,😀ceo,word,language_normalization,,,TRUE,[],Exploratory language/punctuation behavior; English-only product wording is not enforced by isalpha.,low
+E280,Technology,algorithm,A.I.,word,language_normalization,,,TRUE,[],Exploratory language/punctuation behavior; English-only product wording is not enforced by isalpha.,low

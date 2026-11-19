@@ -1,9 +1,9 @@
 import numpy as np
+import pandas as pd
 
 def load_glove_model(glove_file_path):
     """
-    function to load GloVe .txt file directly into a Python Dictionary
-    using only NumPy
+    ฟังก์ชันโหลดไฟล์ GloVe .txt โดยตรงเข้า Python Dictionary ด้วย NumPy
     """
     print(f"Loading GloVe file from {glove_file_path}...")
     embeddings = {}
@@ -12,24 +12,34 @@ def load_glove_model(glove_file_path):
         for line in f:
             parts = line.strip().split()
             word = parts[0]
-            # แปลงค่าตัวเลขเวกเตอร์ที่เหลือให้เป็น NumPy Array (Float32)
             vector = np.array(parts[1:], dtype=np.float32)
             embeddings[word] = vector
             
     print(f"all words: {len(embeddings):,} in system vocabulary")
     return embeddings
 
+def load_domain_corpus(csv_path="corpus/domain_docs.csv"):
+    """
+    ฟังก์ชันสำหรับโหลดคอร์ปัสรูปแบบใหม่ที่เป็นตารางเอกสารรายโดเมน (จากของลูกเจี๊ยบ)
+    """
+    try:
+        corpus_df = pd.read_csv(csv_path)
+        print(f"Loaded domain corpus from {csv_path} ({len(corpus_df)} documents)")
+        return corpus_df
+    except FileNotFoundError:
+        print(f"[!] Warning: Not found '{csv_path}'. Please build the corpus first.")
+        return None
+
 def get_cosine_similarity(word1, word2, embeddings):
     """
-    Cosine Similarity between 2 words
+    คำนวณ Cosine Similarity ระหว่าง 2 คำ
     """
     if word1 not in embeddings or word2 not in embeddings:
-        return 0.0  # ถ้าคำใดคำหนึ่งไม่มีในโมเดล ให้คืนค่า 0
+        return 0.0  
     
     v1 = embeddings[word1]
     v2 = embeddings[word2]
     
-    # คำนวณตามสูตร Cosine Similarity: (A • B) / (||A|| * ||B||)
     dot_product = np.dot(v1, v2)
     norm_v1 = np.linalg.norm(v1)
     norm_v2 = np.linalg.norm(v2)
@@ -39,6 +49,45 @@ def get_cosine_similarity(word1, word2, embeddings):
         
     return float(dot_product / (norm_v1 * norm_v2))
 
+def get_phrase_vector(phrase, embeddings, stopwords=None):
+    """
+    แปลงวลีหรือประโยคให้เป็นเวกเตอร์เดียวด้วย Mean Pooling และ L2 Normalization 
+    พร้อมกรองคำเชื่อม (Stopwords) ออก
+    """
+    if stopwords is None:
+        stopwords = {"a", "an", "the", "in", "on", "at", "by", "for", "with", "and", "or"}
+        
+    words = phrase.lower().split()
+    valid_vectors = []
+    
+    for w in words:
+        if w in embeddings and w not in stopwords:
+            valid_vectors.append(embeddings[w])
+            
+    if not valid_vectors:
+        return None
+        
+    # คำนวณค่าเฉลี่ยเวกเตอร์ (Mean Pooling)
+    phrase_vector = np.mean(valid_vectors, axis=0)
+    
+    # ทำ L2 Normalization ให้เวกเตอร์มีความยาวเป็น 1
+    norm = np.linalg.norm(phrase_vector)
+    if norm > 0:
+        phrase_vector = phrase_vector / norm
+        
+    return phrase_vector
+
+def get_phrase_similarity(phrase1, phrase2, embeddings):
+    """
+    เปรียบเทียบความเหมือนระหว่างวลี 2 วลี
+    """
+    v1 = get_phrase_vector(phrase1, embeddings)
+    v2 = get_phrase_vector(phrase2, embeddings)
+    
+    if v1 is None or v2 is None:
+        return 0.0
+        
+    return float(np.dot(v1, v2))
 
 def calculate_dynamic_damage(player_input, target_word, embeddings, max_hp=100, cutoffs=(0.05, 0.15, 0.30, 0.50)):
     """
@@ -69,46 +118,6 @@ def calculate_dynamic_damage(player_input, target_word, embeddings, max_hp=100, 
         "damage": damage
     }
 
-def get_phrase_vector(phrase, embeddings, stopwords=None):
-    """
-    แปลงวลีหรือประโยค (เช่น 'health potion') ให้เป็นเวกเตอร์เดียวด้วยการเฉลี่ย GloVe Vector ของแต่ละคำ
-    """
-    if stopwords is None:
-        stopwords = {"a", "an", "the", "in", "on", "at", "by", "for", "with"}
-        
-    words = phrase.lower().split()
-    valid_vectors = []
-    
-    for w in words:
-        if w in embeddings and w not in stopwords:
-            valid_vectors.append(embeddings[w])
-            
-    # ถ้าไม่มีคำไหนอยู่ใน GloVe เลย คืนค่า None
-    if not valid_vectors:
-        return None
-        
-    # คำนวณค่าเฉลี่ยเวกเตอร์ (Mean Pooling)
-    phrase_vector = np.mean(valid_vectors, axis=0)
-    
-    # ทำ L2 Normalization ให้เวกเตอร์มีความยาวเป็น 1 (มาตรฐานเดียวกับที่ลูกเจี๊ยบใช้)
-    norm = np.linalg.norm(phrase_vector)
-    if norm > 0:
-        phrase_vector = phrase_vector / norm
-        
-    return phrase_vector
-
-def get_phrase_similarity(phrase1, phrase2, embeddings):
-    """
-    เปรียบเทียบความเหมือนระหว่างวลี 2 วลี
-    """
-    v1 = get_phrase_vector(phrase1, embeddings)
-    v2 = get_phrase_vector(phrase2, embeddings)
-    
-    if v1 is None or v2 is None:
-        return 0.0
-        
-    return float(np.dot(v1, v2))
-
 DOMAIN_ANCHORS = {
     "Business": [
         "Business finance accounting financial reporting quarterly report annual report balance sheet income statement cash flow revenue profit budget audit forecast",
@@ -132,27 +141,6 @@ DOMAIN_ANCHORS = {
     ]
 }
 
-def get_phrase_vector(phrase, embeddings):
-    """
-    ฟังก์ชันรวมเวกเตอร์วลี (จากสเตปที่ 1 ของคุณ)
-    """
-    stopwords = {"a", "an", "the", "in", "on", "at", "by", "for", "with", "and", "or"}
-    words = phrase.lower().split()
-    valid_vectors = []
-    
-    for w in words:
-        if w in embeddings and w not in stopwords:
-            valid_vectors.append(embeddings[w])
-            
-    if not valid_vectors:
-        return None
-        
-    phrase_vector = np.mean(valid_vectors, axis=0)
-    norm = np.linalg.norm(phrase_vector)
-    if norm > 0:
-        phrase_vector = phrase_vector / norm
-    return phrase_vector
-
 def get_domain_vector(domain_name, embeddings):
     """
     สร้างเวกเตอร์ตัวแทนของโดเมนจากค่าเฉลี่ยของประโยคใน DOMAIN_ANCHORS
@@ -160,7 +148,6 @@ def get_domain_vector(domain_name, embeddings):
     if domain_name not in DOMAIN_ANCHORS:
         return None
         
-    # ใช้ get_phrase_vector แปลงแต่ละประโยคให้เป็นเวกเตอร์ก่อนนำมาเฉลี่ย
     vectors = []
     for sentence in DOMAIN_ANCHORS[domain_name]:
         vec = get_phrase_vector(sentence, embeddings)
@@ -198,7 +185,6 @@ def soft_domain_gate(player_phrase, required_domain, embeddings, threshold=0.3):
     best_score = domain_scores[best_domain]
     req_score = domain_scores.get(required_domain, 0.0)
     
-    # เช็กว่าคะแนนของโดเมนเป้าหมายผ่านเกณฑ์ threshold หรือไม่
     if req_score >= threshold and (best_domain == required_domain or (best_score - req_score) < 0.12):
         if best_domain == required_domain and req_score >= 0.30:
             return {"allowed": True, "multiplier": 1.25, "status": f"PRIMARY ({required_domain}) - Bonus!"}
@@ -214,18 +200,16 @@ if __name__ == "__main__":
     glove_file = "glove.6B.100d.txt"
     
     try:
-        # 1. โหลดโมเดล
         glove_embeddings = load_glove_model(glove_file)
         
-        # 2. ทดสอบวัดความเหมือนของคำ
+        # ทดสอบโหลดคอร์ปัสแบบตารางเอกสาร
+        corpus_df = load_domain_corpus()
+        if corpus_df is not None:
+            print(f"Sample corpus documents loaded: {len(corpus_df)} rows")
+        
         w1, w2 = "king", "queen"
         sim = get_cosine_similarity(w1, w2, glove_embeddings)
         print(f"Similarity '{w1}' and '{w2}': {sim:.4f}")
         
-        w3, w4 = "king", "apple"
-        sim2 = get_cosine_similarity(w3, w4, glove_embeddings)
-        print(f"Similarity '{w3}' and '{w4}': {sim2:.4f}")
-        
     except FileNotFoundError:
         print(f"\n[!] not found '{glove_file}' in this folder")
-        print("please download the .txt file of GloVe and place it in the glove_module folder before running again")
