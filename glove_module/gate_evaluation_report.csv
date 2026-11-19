@@ -5,13 +5,13 @@ Business,executive,banana,out_of_domain,out_of_domain,✅ PASS
 Business,executive,algorithm,out_of_domain,out_of_domain,✅ PASS
 Technology,algorithm,source code,in_domain,in_domain,✅ PASS
 Technology,algorithm,database,in_domain,in_domain,✅ PASS
-Technology,algorithm,abstract painting,out_of_domain,in_domain,❌ FAIL
+Technology,algorithm,chemical reaction,out_of_domain,in_domain,❌ FAIL
 Technology,algorithm,ceo,out_of_domain,out_of_domain,✅ PASS
 Science,catalyst,molecule,in_domain,in_domain,✅ PASS
 Science,catalyst,chemical reaction,in_domain,in_domain,✅ PASS
 Science,catalyst,spreadsheet,out_of_domain,out_of_domain,✅ PASS
-Science,catalyst,guitar,out_of_domain,out_of_domain,✅ PASS
-Arts,painting,sculpture,in_domain,in_domain,✅ PASS
-Arts,painting,orchestra,in_domain,in_domain,✅ PASS
-Arts,painting,algorithm,out_of_domain,out_of_domain,✅ PASS
-Arts,painting,banana,out_of_domain,out_of_domain,✅ PASS
+Science,catalyst,history,out_of_domain,in_domain,❌ FAIL
+History,revolution,war,in_domain,out_of_domain,❌ FAIL
+History,revolution,empire,in_domain,out_of_domain,❌ FAIL
+History,revolution,algorithm,out_of_domain,out_of_domain,✅ PASS
+History,revolution,banana,out_of_domain,out_of_domain,✅ PASS

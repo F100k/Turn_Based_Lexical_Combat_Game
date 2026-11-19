@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
-from glove_loader import load_glove_model, get_phrase_vector, soft_domain_gate, calculate_dynamic_damage
+from glove_loader import load_glove_model, get_phrase_vector, soft_domain_gate, calculate_dynamic_damage, load_domain_corpus
 
+# ปรับปรุงเคสทดสอบให้ตรงกับ 4 โดเมนหลักของเรา (Business, Technology, Science, History)
 GATE_TEST_CASES = [
     # (Target, Player Guess, Required Domain, Expected Gate Label)
     ("executive", "ceo", "Business", "in_domain"),
@@ -11,18 +12,19 @@ GATE_TEST_CASES = [
     
     ("algorithm", "source code", "Technology", "in_domain"),
     ("algorithm", "database", "Technology", "in_domain"),
-    ("algorithm", "abstract painting", "Technology", "out_of_domain"),
+    ("algorithm", "chemical reaction", "Technology", "out_of_domain"),
     ("algorithm", "ceo", "Technology", "out_of_domain"),
     
     ("catalyst", "molecule", "Science", "in_domain"),
     ("catalyst", "chemical reaction", "Science", "in_domain"),
     ("catalyst", "spreadsheet", "Science", "out_of_domain"),
-    ("catalyst", "guitar", "Science", "out_of_domain"),
+    ("catalyst", "history", "Science", "out_of_domain"),
     
-    ("painting", "sculpture", "Arts", "in_domain"),
-    ("painting", "orchestra", "Arts", "in_domain"),
-    ("painting", "algorithm", "Arts", "out_of_domain"),
-    ("painting", "banana", "Arts", "out_of_domain"),
+    # ปรับจาก Arts เป็น History หรือหมวดหลักในระบบ
+    ("revolution", "war", "History", "in_domain"),
+    ("revolution", "empire", "History", "in_domain"),
+    ("revolution", "algorithm", "History", "out_of_domain"),
+    ("revolution", "banana", "History", "out_of_domain"),
 ]
 
 SIMULATION_STAGES = [
@@ -93,7 +95,6 @@ def evaluate_gate_performance(embeddings):
     df_results = pd.DataFrame(results)
     print(df_results.to_string(index=False))
 
-    # 📌 เซฟผลประเมิน Gate เป็นไฟล์ CSV ตรงนี้ถูกต้องแล้ว
     df_results.to_csv("gate_evaluation_report.csv", index=False, encoding="utf-8")
     print("📁 Saved: 'gate_evaluation_report.csv'")
     
@@ -159,7 +160,6 @@ def simulate_battle_pacing(embeddings):
     df_pacing = pd.DataFrame(simulation_summaries)
     print(df_pacing.to_string(index=False))
     
-    # 📌 ย้ายการเซฟ `df_pacing` มาไว้ในฟังก์ชันนี้ เพื่อให้มองเห็นตัวแปรและเซฟสำเร็จ
     df_pacing.to_csv("battle_pacing_report.csv", index=False, encoding="utf-8")
     print("📁 Saved: 'battle_pacing_report.csv'")
     print("=" * 60)
@@ -169,6 +169,10 @@ if __name__ == "__main__":
     
     print("Initializing GloVe model for Simulation & Evaluation...")
     embeddings = load_glove_model(glove_file)
+    print("-" * 60)
+    
+    # โหลดคอร์ปัสเอกสารรายโดเมน CSV เพื่อความสมบูรณ์
+    corpus_df = load_domain_corpus("corpus/domain_docs.csv")
     print("-" * 60)
     
     evaluate_gate_performance(embeddings)

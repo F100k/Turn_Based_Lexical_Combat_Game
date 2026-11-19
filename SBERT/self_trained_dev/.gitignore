@@ -1,4 +1,0 @@
-# Notebook export files (large); keep only the placeholder
-artifacts/*
-!artifacts/.gitkeep
-__pycache__/

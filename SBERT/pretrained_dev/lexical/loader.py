@@ -10,7 +10,7 @@ from .engine import LexicalCombatEngine
 from .target_bank import build_target_bank, eligible_targets
 
 EXPORT_VERSION = 1
-BACKENDS = ("self_trained", "pretrained")
+BACKENDS = ("pretrained",)
 
 _CACHE = {}
 _LOCK = threading.Lock()
@@ -59,9 +59,6 @@ def _sha256(path: Path) -> str:
 
 
 def _build_encoder(backend: str, folder: Path, manifest: dict):
-    if backend == "self_trained":
-        from .encoders.word_vectors import WordVectorEncoder
-        return WordVectorEncoder.from_dir(folder)
     if backend == "pretrained":
         from .encoders.sentence_transformer import SentenceTransformerEncoder
         return SentenceTransformerEncoder.from_dir(folder)

@@ -41,6 +41,18 @@ SIMULATION_STAGES = [
     }
 ]
 
+def load_domain_corpus(csv_path="corpus/domain_docs.csv"):
+    """
+    โหลดคอร์ปัสรูปแบบใหม่ที่เป็นตารางเอกสารรายโดเมน (ตามโครงสร้างของกลุ่ม)
+    """
+    try:
+        corpus_df = pd.read_csv(csv_path)
+        print(f"Loaded domain corpus from {csv_path} ({len(corpus_df)} documents)")
+        return corpus_df
+    except FileNotFoundError:
+        print(f"[!] Warning: Not found '{csv_path}'. Continuing without corpus loading.")
+        return None
+
 def calculate_dynamic_damage_tuned(player_input, target_word, embeddings, max_hp=100, cutoffs=(0.2, 0.4, 0.6, 0.8)):
     sim = get_cosine_similarity(player_input, target_word, embeddings)
     t1, t2, t3, t4 = cutoffs
@@ -169,6 +181,10 @@ def run_grid_search(embeddings):
 if __name__ == "__main__":
     glove_file = "glove.6B.100d.txt"
     embeddings = load_glove_model(glove_file)
+    print("-" * 60)
+    
+    # โหลดคอร์ปัสเอกสารรายโดเมนเพื่อเตรียมใช้งานร่วมกับการประเมิน
+    corpus_df = load_domain_corpus("corpus/domain_docs.csv")
     print("-" * 60)
     
     # รัน Grid Search เพื่อหาค่าที่ดีที่สุด

@@ -1,4 +1,4 @@
-"""Target bank screening and random stage drawing (notebook Section 11, pandas-free)."""
+"""Target bank screening and random stage drawing (notebook Section 6.5c, pandas-free)."""
 import random
 
 import numpy as np

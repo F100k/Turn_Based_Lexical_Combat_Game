@@ -1,0 +1,53 @@
+case_id,domain,target,answer,expected_domain,sim_domain,label_confidence
+E005,Business,executive,boardroom,in_domain,0.21310298144817352,medium
+E007,Business,executive,neural network,out_of_domain,0.40528643131256104,high
+E010,Business,brand,logo,in_domain,0.2984038293361664,medium
+E050,Technology,algorithm,pseudocode,in_domain,-0.0827740877866745,medium
+E056,Technology,algorithm,oil painting,out_of_domain,0.3854342997074127,high
+E058,Technology,email,inbox,in_domain,0.13360267877578735,medium
+E064,Technology,email,cash flow,out_of_domain,0.5393304228782654,high
+E066,Technology,encryption,cipher,in_domain,0.18816225230693817,medium
+E072,Technology,encryption,quarterly earnings,out_of_domain,0.43771982192993164,high
+E076,Technology,compiler,debugger,in_domain,0.1652354598045349,medium
+E088,Technology,router,shareholder,out_of_domain,0.322613388299942,high
+E093,Technology,database,indexing,in_domain,0.2992066740989685,medium
+E097,Science,catalyst,enzyme,in_domain,0.29859381914138794,medium
+E098,Science,catalyst,accelerant,in_domain,-0.033771853893995285,medium
+E110,Science,comet,enzyme,in_domain,0.29859381914138794,medium
+E114,Science,photosynthesis,chlorophyll,in_domain,0.21869000792503357,medium
+E116,Science,photosynthesis,sunlight,in_domain,0.27374833822250366,medium
+E121,Science,gravity,gravitation,in_domain,0.2753860652446747,medium
+E123,Science,gravity,falling bodies,in_domain,0.28840261697769165,medium
+E127,Science,gravity,cash flow,out_of_domain,0.3418664038181305,high
+E135,Science,molecule,stock market,out_of_domain,0.3445674479007721,high
+E140,Science,ecosystem,habitat,in_domain,0.261352002620697,medium
+E149,Arts,painting,brushstroke,in_domain,0.013690684922039509,medium
+E152,Arts,painting,cash flow,out_of_domain,0.3340745270252228,high
+E158,Arts,cartoon,sonata,in_domain,0.1684197336435318,medium
+E168,Arts,symphony,balance sheet,out_of_domain,0.3358471393585205,high
+E172,Arts,sculpture,clay,in_domain,0.2926207482814789,medium
+E179,Arts,poetry,sonnet,in_domain,0.08283930271863937,medium
+E180,Arts,poetry,rhyme,in_domain,0.1412232220172882,medium
+E183,Arts,poetry,database,out_of_domain,0.34885507822036743,high
+E184,Arts,poetry,cash flow,out_of_domain,0.3340745270252228,high
+E199,Science,catalyst,business logic,out_of_domain,0.6345084309577942,medium
+E200,Arts,painting,business logic,out_of_domain,0.540127694606781,medium
+E201,Business,executive,logic gate,out_of_domain,0.32974642515182495,medium
+E203,Science,catalyst,logic gate,out_of_domain,0.476686030626297,medium
+E204,Arts,painting,logic gate,out_of_domain,0.3845117390155792,medium
+E206,Technology,algorithm,director,out_of_domain,0.4267115592956543,medium
+E207,Science,catalyst,director,out_of_domain,0.45862093567848206,medium
+E209,Business,executive,film director,out_of_domain,0.4831768572330475,medium
+E210,Technology,algorithm,film director,out_of_domain,0.4883979260921478,medium
+E211,Science,catalyst,film director,out_of_domain,0.4714495539665222,medium
+E214,Technology,algorithm,company director,out_of_domain,0.6232003569602966,medium
+E215,Science,catalyst,company director,out_of_domain,0.5056447386741638,medium
+E216,Arts,painting,company director,out_of_domain,0.6313172578811646,medium
+E221,Business,executive,computer virus,out_of_domain,0.49759092926979065,medium
+E223,Science,catalyst,computer virus,out_of_domain,0.5453676581382751,medium
+E224,Arts,painting,computer virus,out_of_domain,0.41181480884552,medium
+E226,Technology,algorithm,biological virus,out_of_domain,0.4685820937156677,medium
+E233,Business,executive,machine learning,out_of_domain,0.5394073128700256,medium
+E236,Arts,painting,machine learning,out_of_domain,0.5677764415740967,medium
+E238,Technology,algorithm,art auction,out_of_domain,0.508115828037262,medium
+E239,Science,catalyst,art auction,out_of_domain,0.4383732080459595,medium

@@ -2,7 +2,7 @@
 
 Typical use:
     from lexical import load_game, GameSession
-    game = load_game("self_trained", "artifacts/self_trained")
+    game = load_game("pretrained", "artifacts")
     session = GameSession.start(game.eligible, game.game_data.boss_names)
     event = session.attack(game.engine, "chief executive")
 """

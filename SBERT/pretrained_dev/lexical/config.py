@@ -8,7 +8,7 @@ PACKAGE_DATA = Path(__file__).resolve().parent / "data" / "game_data.json"
 
 @dataclass(frozen=True)
 class EngineConfig:
-    """Tunable parameters (notebook Section 3). Defaults are pre-calibration values."""
+    """Tunable parameters (notebook Section 6.1). Defaults are pre-calibration values."""
     # Domain gate (debiased score = top-k anchor cosine minus the domain's noise background)
     anchor_topk: int = 2
     gate_primary_min: float = 0.20
