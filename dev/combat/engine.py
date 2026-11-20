@@ -26,11 +26,9 @@ REPO_ROOT = DEV_DIR.parent
 
 SBERT_DIR = REPO_ROOT / "SBERT" / "pretrained_dev"
 SBERT_ARTIFACTS_DIR = SBERT_DIR / "artifacts"
-SELF_TRAINED_DIR = REPO_ROOT / "SBERT" / "self_trained_dev"
-SELF_TRAINED_ARTIFACTS_DIR = SELF_TRAINED_DIR / "artifacts"
 GLOVE_DIR = REPO_ROOT / "glove_module"
 GLOVE_TXT_PATH = GLOVE_DIR / "glove.6B.100d.txt"
-CORPUS_PATH = GLOVE_DIR / "corpus.txt"
+CORPUS_DOCS_PATH = GLOVE_DIR / "corpus" / "domain_docs.csv"
 
 # ── DOMAINS & ANCHORS ────────────────────────────────────────────────────────
 DOMAINS = ["Business", "Technology", "Science", "Arts"]
@@ -58,14 +56,14 @@ DOMAIN_ANCHORS: Dict[str, List[str]] = {
     ],
 }
 
-# Thematic bosses and stage progression
+# Thematic bosses and stage progression (calibrated with SBERT game_data & GloVe pacing)
 BOSS_STAGES = [
     {
         "stage": 1,
         "enemy": "Corporate Titan",
         "domain": "Business",
         "target": "executive",
-        "hp": 100,
+        "hp": 180,
         "description": "Monolithic CEO guarding the corporate citadel.",
         "taunts": [
             "Your hostile takeover is denied!",
@@ -79,7 +77,7 @@ BOSS_STAGES = [
         "enemy": "Cyber Sentinel",
         "domain": "Technology",
         "target": "algorithm",
-        "hp": 100,
+        "hp": 200,
         "description": "Autonomous security core protecting the mainframe.",
         "taunts": [
             "Syntax error detected in your logic!",
@@ -93,7 +91,7 @@ BOSS_STAGES = [
         "enemy": "Alchemist Golem",
         "domain": "Science",
         "target": "catalyst",
-        "hp": 100,
+        "hp": 200,
         "description": "Construct fueled by reactive primordial elements.",
         "taunts": [
             "An unstable reaction consumes you!",
@@ -107,7 +105,7 @@ BOSS_STAGES = [
         "enemy": "Muse Phantom",
         "domain": "Arts",
         "target": "painting",
-        "hp": 100,
+        "hp": 200,
         "description": "Ethereal spirit weaving discord and tragic harmony.",
         "taunts": [
             "Dissonance shatters your prose!",
@@ -161,15 +159,18 @@ def get_corpus_vocab() -> set:
         except Exception as e:
             logger.warning("Failed loading vocab from game_data.json: %s", e)
 
-    # 2. From corpus.txt
-    if CORPUS_PATH.is_file():
+    # 2. From domain corpus docs (domain_docs.csv)
+    if CORPUS_DOCS_PATH.is_file():
         try:
-            with open(CORPUS_PATH, "r", encoding="utf-8") as f:
-                for line in f:
-                    words = re.findall(r"\b[a-zA-Z]+\b", line.lower())
-                    vocab.update(words)
+            import csv
+            with open(CORPUS_DOCS_PATH, "r", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    for field in ("term", "title", "text"):
+                        val = row.get(field, "")
+                        vocab.update(clean_text(val).split())
         except Exception as e:
-            logger.warning("Failed loading vocab from corpus.txt: %s", e)
+            logger.warning("Failed loading vocab from domain_docs.csv: %s", e)
 
     _CORPUS_VOCAB = vocab
     return _CORPUS_VOCAB
@@ -224,34 +225,22 @@ class GloVeBackend:
 
         try:
             import numpy as np
+            if str(GLOVE_DIR) not in sys.path:
+                sys.path.insert(0, str(GLOVE_DIR))
+            import glove_loader
 
             logger.info("Loading GloVe vectors from %s...", self.glove_path)
-            embeddings = {}
-            with open(self.glove_path, "r", encoding="utf-8") as f:
-                for line in f:
-                    parts = line.strip().split()
-                    if parts:
-                        word = parts[0]
-                        embeddings[word] = np.array(parts[1:], dtype=np.float32)
-
-            self.embeddings = embeddings
+            self.embeddings = glove_loader.load_glove_model(str(self.glove_path))
+            self.loader = glove_loader
             self.is_loaded = True
 
-            # Precompute domain anchor vectors
-            for dom, sentences in DOMAIN_ANCHORS.items():
-                vecs = []
-                for sentence in sentences:
-                    v = self.get_phrase_vector(sentence)
-                    if v is not None:
-                        vecs.append(v)
-                if vecs:
-                    d_vec = np.mean(vecs, axis=0)
-                    norm = np.linalg.norm(d_vec)
-                    if norm > 0:
-                        d_vec = d_vec / norm
+            # Precompute domain anchor vectors from glove_loader
+            for dom in glove_loader.DOMAIN_ANCHORS.keys():
+                d_vec = glove_loader.get_domain_vector(dom, self.embeddings)
+                if d_vec is not None:
                     self.domain_vectors[dom] = d_vec
 
-            logger.info("GloVe loaded successfully with %d words.", len(embeddings))
+            logger.info("GloVe loaded successfully with %d words.", len(self.embeddings))
             return True
         except Exception as e:
             logger.warning("GloVe loading failed: %s", e)
@@ -260,8 +249,9 @@ class GloVeBackend:
     def get_phrase_vector(self, phrase: str):
         if not self.is_loaded or self.embeddings is None:
             return None
+        if hasattr(self, "loader") and self.loader:
+            return self.loader.get_phrase_vector(phrase, self.embeddings)
         import numpy as np
-
         words = [w for w in clean_text(phrase).split() if w not in STOPWORDS]
         vectors = [self.embeddings[w] for w in words if w in self.embeddings]
         if not vectors:
@@ -298,58 +288,33 @@ class GloVeBackend:
                 "model_used": "GloVe (Static Embeddings)",
             }
 
-        # 1. Cosine similarity
-        similarity = float(np.dot(phrase_vec, target_vec))
-
-        # 2. Soft Domain Gate
-        domain_scores = {}
-        for dom, dom_vec in self.domain_vectors.items():
-            domain_scores[dom] = float(np.dot(phrase_vec, dom_vec))
-
-        best_domain = max(domain_scores, key=domain_scores.get)
-        best_score = domain_scores[best_domain]
-        req_score = domain_scores.get(required_domain, 0.0)
-
-        threshold = 0.30
-        if req_score >= threshold and (best_domain == required_domain or (best_score - req_score) < 0.12):
-            if best_domain == required_domain and req_score >= 0.30:
-                domain_allowed = True
-                multiplier = 1.25
-                match_type = f"PRIMARY ({required_domain}) - Bonus!"
-            else:
-                domain_allowed = True
-                multiplier = 1.0
-                match_type = f"IN-DOMAIN ({required_domain})"
+        # Use glove_loader calibrated gate & damage
+        if hasattr(self, "loader") and self.loader:
+            gate_res = self.loader.soft_domain_gate(phrase, required_domain, self.embeddings)
+            dmg_res = self.loader.calculate_dynamic_damage(
+                phrase, target_word, self.embeddings, max_hp=enemy_max_hp
+            )
+            domain_allowed = gate_res["allowed"]
+            multiplier = gate_res["multiplier"]
+            match_type = gate_res["status"]
+            similarity = dmg_res["similarity"]
+            tier = dmg_res["tier"] if domain_allowed else "BLOCKED / MISS"
+            base_damage = dmg_res["damage"] if domain_allowed else 0
         else:
-            if req_score >= threshold:
-                domain_allowed = True
-                multiplier = 0.75
-                match_type = f"SECONDARY (Matched {best_domain})"
-            else:
-                domain_allowed = False
-                multiplier = 0.0
-                match_type = "BLOCKED (Out of Domain)"
-
-        # 3. Dynamic damage cutoffs: (0.05, 0.15, 0.30, 0.50)
-        if similarity < 0.05 or not domain_allowed:
-            tier = "BLOCKED / MISS"
-            base_damage = 0
-        elif similarity < 0.15:
-            tier = "WEAK GRAZE"
-            base_damage = int(enemy_max_hp * 0.10)
-        elif similarity < 0.30:
+            similarity = float(np.dot(phrase_vec, target_vec))
+            domain_allowed = True
+            multiplier = 1.0
+            match_type = "IN-DOMAIN"
             tier = "SOLID HIT"
-            base_damage = int(enemy_max_hp * 0.20)
-        elif similarity < 0.50:
-            tier = "STRONG HIT"
-            base_damage = int(enemy_max_hp * 0.35)
-        else:
-            tier = "CRITICAL STRIKE!"
-            base_damage = int(enemy_max_hp * 0.50)
+            base_damage = 20
 
         actual_damage = int(round(base_damage * multiplier))
         if base_damage > 0 and domain_allowed:
             actual_damage = max(actual_damage, 1)
+
+        domain_scores = {}
+        for dom, dom_vec in self.domain_vectors.items():
+            domain_scores[dom] = float(np.dot(phrase_vec, dom_vec))
 
         return {
             "valid": True,
@@ -363,6 +328,21 @@ class GloVeBackend:
             "damage": actual_damage,
             "model_used": "GloVe (Static Embeddings)",
         }
+
+    def hint(self, target_word: str, required_domain: str, used_guesses: set) -> str:
+        words = get_corpus_vocab(required_domain)
+        cleaned_target = clean_text(target_word)
+        for w in words:
+            cw = clean_text(w)
+            if cw and cw != cleaned_target and cw not in used_guesses and len(cw) > 3:
+                return w
+        if required_domain in DOMAIN_ANCHORS:
+            for sentence in DOMAIN_ANCHORS[required_domain]:
+                for w in sentence.split():
+                    cw = clean_text(w)
+                    if cw and cw != cleaned_target and cw not in used_guesses and cw not in STOPWORDS and len(cw) > 3:
+                        return w
+        return "Think of words closely associated with the target domain."
 
 
 # ── SBERT BACKEND (Sentence-Transformers MiniLM) ──────────────────────────────
@@ -630,113 +610,15 @@ class FallbackSemanticBackend:
         return "Think of words closely associated with the target domain."
 
 
-# ── SELF-TRAINED BACKEND ─────────────────────────────────────────────────────
-class SelfTrainedBackend:
-    """Self-trained Word2Vec / FastText / PPMI-SVD engine adapter."""
-
-    def __init__(self, package_dir: Path = SELF_TRAINED_DIR,
-                 artifacts_dir: Path = SELF_TRAINED_ARTIFACTS_DIR):
-        self.package_dir = package_dir
-        self.artifacts_dir = artifacts_dir
-        self.game = None
-        self.is_loaded = False
-
-    def load(self) -> bool:
-        if self.is_loaded:
-            return True
-        manifest_path = self.artifacts_dir / "manifest.json"
-        if not manifest_path.is_file():
-            return False
-
-        try:
-            from lexical import load_game
-
-            load_game = _load_lexical_package(self.package_dir)
-
-            self.game = load_game("self_trained", self.artifacts_dir)
-            model_name = str(self.game.manifest.get("model", "Word Vectors"))
-            self.model_name = model_name
-            self.is_loaded = True
-            logger.info("Self-trained game engine loaded successfully: %s", model_name)
-            return True
-        except Exception as e:
-            logger.info("Self-trained game engine not loaded: %s", e)
-            return False
-
-    def evaluate(self, phrase: str, target_word: str, required_domain: str,
-                 used_guesses: set, enemy_max_hp: int = 100) -> Dict[str, Any]:
-        if not self.is_loaded or self.game is None:
-            raise RuntimeError("Self-trained backend is not loaded.")
-
-        r = self.game.engine.evaluate_attack(
-            phrase, target_word, required_domain, used_guesses, enemy_max_hp
-        )
-        model_label = f"Self-Trained ({getattr(self, 'model_name', 'Word Vectors')})"
-        if not r.get("valid"):
-            return {
-                "valid": False,
-                "reason": r.get("reason", "Invalid attack"),
-                "similarity": 0.0,
-                "domain_allowed": False,
-                "domain_match_type": "INVALID",
-                "multiplier": 0.0,
-                "tier": "NO EFFECT",
-                "damage": 0,
-                "model_used": model_label,
-            }
-
-        return {
-            "valid": True,
-            "similarity": round(r["similarity"], 4),
-            "relevance": round(r["relevance"], 3),
-            "domain_scores": {k: round(v, 3) for k, v in r["domain_scores"].items()},
-            "domain_allowed": r["domain_allowed"],
-            "domain_match_type": r["domain_match_type"],
-            "multiplier": r["multiplier"],
-            "is_generic": r["is_generic"],
-            "is_echo": r["is_echo"],
-            "tier": r["tier"],
-            "damage": r["damage"],
-            "hit_percent": r["hit_percent"],
-            "model_used": model_label,
-        }
-
-    def hint(self, target_word: str, required_domain: str, used_guesses: set) -> str:
-        if not self.is_loaded or self.game is None:
-            return ""
-        try:
-            return self.game.engine.hint(target_word, required_domain, used_guesses)
-        except Exception:
-            return ""
-
-
-def _load_lexical_package(package_dir: Path):
-    """Load the lexical package from an isolated SBERT implementation folder."""
-    sbert_lib = str(package_dir)
-    if sbert_lib not in sys.path:
-        sys.path.insert(0, sbert_lib)
-
-    # The two dev folders intentionally expose the same `lexical` module name.
-    # Remove cached modules so switching backends cannot reuse the wrong package.
-    for module_name in list(sys.modules):
-        if module_name == "lexical" or module_name.startswith("lexical."):
-            del sys.modules[module_name]
-
-    lexical_package = importlib.import_module("lexical")
-    return lexical_package.load_game
-
-
 # ── UNIFIED ENGINE MANAGER & FACADE ──────────────────────────────────────────
 _SBERT_BACKEND = SBERTBackend()
 _GLOVE_BACKEND = GloVeBackend()
 _FALLBACK_BACKEND = FallbackSemanticBackend()
-_SELF_TRAINED_BACKEND = SelfTrainedBackend()
 
 
 def initialize_engines():
     """Attempt loading all available NLP backends on application startup."""
     _SBERT_BACKEND.load()
-    _SELF_TRAINED_BACKEND.load()
     _GLOVE_BACKEND.load()
 
 
@@ -744,8 +626,6 @@ def get_available_models() -> Dict[str, Dict[str, Any]]:
     """Return availability status and description for each supported model."""
     if not _SBERT_BACKEND.is_loaded:
         _SBERT_BACKEND.load()
-    if not _SELF_TRAINED_BACKEND.is_loaded:
-        _SELF_TRAINED_BACKEND.load()
     if not _GLOVE_BACKEND.is_loaded:
         _GLOVE_BACKEND.load()
 
@@ -753,17 +633,12 @@ def get_available_models() -> Dict[str, Dict[str, Any]]:
         "auto": {
             "name": "Auto (Recommended)",
             "available": True,
-            "description": "Selects the best available model (SBERT > Self-Trained > GloVe > Semantic Fallback).",
+            "description": "Selects the best available model (SBERT > GloVe > Semantic Fallback).",
         },
         "sbert": {
             "name": "SBERT (Contextual MiniLM)",
             "available": _SBERT_BACKEND.is_loaded,
             "description": "Dense sentence transformer embedding using all-MiniLM-L6-v2.",
-        },
-        "self_trained": {
-            "name": "Self-Trained (Word Vectors)",
-            "available": _SELF_TRAINED_BACKEND.is_loaded,
-            "description": "Word embeddings trained in the project notebook export.",
         },
         "glove": {
             "name": "GloVe (Static Word Vectors)",
@@ -785,8 +660,7 @@ def score_lexical_attack(
     model_name: str = "auto",
     turn_number: int = 1,
     used_guesses: Optional[List[str]] = None,
-    enemy_max_hp: int = 100,
-    projector: Any = None,
+    enemy_max_hp: int = 180,
 ) -> Dict[str, Any]:
     """Score a player's attack phrase using the selected NLP model."""
     used = set(clean_text(u) for u in (used_guesses or []))
@@ -801,10 +675,6 @@ def score_lexical_attack(
         if not _SBERT_BACKEND.is_loaded:
             _SBERT_BACKEND.load()
         backend = _SBERT_BACKEND if _SBERT_BACKEND.is_loaded else _FALLBACK_BACKEND
-    elif selected_model == "self_trained":
-        if not _SELF_TRAINED_BACKEND.is_loaded:
-            _SELF_TRAINED_BACKEND.load()
-        backend = _SELF_TRAINED_BACKEND if _SELF_TRAINED_BACKEND.is_loaded else _FALLBACK_BACKEND
     elif selected_model == "glove":
         if not _GLOVE_BACKEND.is_loaded:
             _GLOVE_BACKEND.load()
@@ -814,14 +684,10 @@ def score_lexical_attack(
     else:  # auto
         if not _SBERT_BACKEND.is_loaded:
             _SBERT_BACKEND.load()
-        if not _SELF_TRAINED_BACKEND.is_loaded:
-            _SELF_TRAINED_BACKEND.load()
         if not _GLOVE_BACKEND.is_loaded:
             _GLOVE_BACKEND.load()
         if _SBERT_BACKEND.is_loaded:
             backend = _SBERT_BACKEND
-        elif _SELF_TRAINED_BACKEND.is_loaded:
-            backend = _SELF_TRAINED_BACKEND
         elif _GLOVE_BACKEND.is_loaded:
             backend = _GLOVE_BACKEND
         else:
@@ -851,6 +717,7 @@ def score_lexical_attack(
 
     return {
         "damage": eval_result.get("damage", 0),
+        "actual_damage": eval_result.get("damage", 0),
         "similarity": eval_result.get("similarity", 0.0),
         "relevance": eval_result.get("relevance", 0.0),
         "tier": eval_result.get("tier", "BLOCKED / MISS"),
@@ -910,11 +777,8 @@ def generate_hint(
     hint_text = ""
     if model_name in ("auto", "sbert") and _SBERT_BACKEND.is_loaded:
         hint_text = _SBERT_BACKEND.hint(target_word, domain, used)
-    elif model_name == "self_trained":
-        if not _SELF_TRAINED_BACKEND.is_loaded:
-            _SELF_TRAINED_BACKEND.load()
-        if _SELF_TRAINED_BACKEND.is_loaded:
-            hint_text = _SELF_TRAINED_BACKEND.hint(target_word, domain, used)
+    elif model_name == "glove" and _GLOVE_BACKEND.is_loaded:
+        hint_text = _GLOVE_BACKEND.hint(target_word, domain, used)
 
     if not hint_text:
         hint_text = _FALLBACK_BACKEND.hint(target_word, domain, used)

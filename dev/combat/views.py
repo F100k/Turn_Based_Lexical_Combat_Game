@@ -1,167 +1,191 @@
 """Views for rendering the game arena UI and handling JSON combat endpoints."""
 
+import csv
+import io
 import json
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_GET, require_POST
 
-from combat.engine import (
-    BOSS_STAGES,
-    DOMAINS,
-    generate_enemy_counterattack,
-    generate_hint,
-    get_available_models,
-    score_lexical_attack,
-)
 from combat.models import MatchHistory
+from combat.scoring import get_engine, STAGES
+from lexical.session import public_result
+
+
+def _parse_payload(request) -> dict:
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+        if not isinstance(data, dict):
+            raise ValueError()
+        return data
+    except (ValueError, UnicodeDecodeError):
+        raise ValueError("Expected JSON object")
 
 
 @require_GET
 def arena_view(request):
-    """Render the main turn-based lexical combat arena HTML page."""
-    available_models = get_available_models()
     return render(
         request,
         "combat/arena.html",
         {
-            "default_topic": BOSS_STAGES[0]["domain"],
-            "default_target": BOSS_STAGES[0]["target"],
-            "default_enemy": BOSS_STAGES[0]["enemy"],
-            "default_hp": BOSS_STAGES[0]["hp"],
-            "stages": BOSS_STAGES,
-            "stages_json": json.dumps(BOSS_STAGES),
-            "domains": DOMAINS,
-            "available_models": available_models,
-            "models_json": json.dumps(available_models),
+            "default_topic": "Technology",
+            "default_target": "algorithm",
+            "stages": STAGES,
         },
     )
 
 
-@require_GET
-def leaderboard_page(request):
-    """Render the leaderboard HTML page."""
-    entries = MatchHistory.objects.exclude(status="active")[:20]
-    return render(request, "combat/leaderboard.html", {"leaderboard": entries})
+@require_POST
+def start_endpoint(request):
+    try:
+        data = _parse_payload(request)
+        backend = str(data.get("backend", "sbert")).lower().strip()
+        stage_id = data.get("stage", 1)
+        if isinstance(stage_id, str):
+            stage_id = int(stage_id) if stage_id.isdigit() else 1
+        name = str(data.get("player_name", "Challenger")).strip() or "Challenger"
+
+        if backend not in {"glove", "sbert", "self_trained"}:
+            backend = "sbert"
+        if not (0 <= stage_id < len(STAGES)):
+            stage_id = 0
+        if len(name) > 100:
+            raise ValueError("Name must be at most 100 characters")
+
+        get_engine(backend)
+        state = {
+            "backend": backend,
+            "stage": stage_id,
+            "name": name,
+            "hp": 200,
+            "player_hp": 100,
+            "turns": 0,
+            "used": [],
+            "total_damage": 0,
+            "status": "active",
+        }
+        request.session["battle"] = state
+        return JsonResponse({"state": state, "stage": STAGES[stage_id]})
+    except ValueError as e:
+        return JsonResponse({"error": str(e)}, status=400)
+    except (OSError, ImportError) as e:
+        return JsonResponse({"error": f"Model unavailable: {e}"}, status=503)
 
 
 @require_POST
 def attack_endpoint(request):
-    """Handle a player's lexical attack submission and return JSON results."""
     try:
-        payload = json.loads(request.body.decode("utf-8"))
-    except (json.JSONDecodeError, UnicodeDecodeError):
-        return JsonResponse({"error": "Invalid JSON payload."}, status=400)
+        data = _parse_payload(request)
+        text = str(data.get("attack_text") or data.get("text") or "").strip()
+        if not text:
+            return JsonResponse({"error": "Attack text cannot be empty."}, status=400)
+        if len(text) > 200:
+            raise ValueError("Answer must be at most 200 characters")
 
-    attack_text = str(payload.get("attack_text", "")).strip()
-    target_topic = str(payload.get("target_topic", "Business")).strip() or "Business"
-    target_word = str(payload.get("target_word", "executive")).strip() or "executive"
-    enemy_name = str(payload.get("enemy_name", "Corporate Titan")).strip() or "Corporate Titan"
-    model_name = str(payload.get("model_name", "auto")).strip() or "auto"
-    turn_number = int(payload.get("turn_number", 1))
-    player_hp = int(payload.get("player_hp", 100))
-    enemy_hp = int(payload.get("enemy_hp", 100))
-    used_guesses = payload.get("used_guesses", [])
-    player_name = str(payload.get("player_name", "Challenger")).strip() or "Challenger"
+        state = request.session.get("battle")
+        if not state or state.get("status") != "active":
+            backend = str(data.get("backend", "sbert")).lower().strip()
+            stage_id = int(data.get("stage", 1))
+            if not (0 <= stage_id < len(STAGES)):
+                stage_id = 1
+            state = {
+                "backend": backend,
+                "stage": stage_id,
+                "name": str(data.get("player_name", "Challenger")).strip() or "Challenger",
+                "hp": 200,
+                "player_hp": 100,
+                "turns": 0,
+                "used": [],
+                "total_damage": 0,
+                "status": "active",
+            }
+            request.session["battle"] = state
 
-    if not attack_text:
-        return JsonResponse({"error": "Attack text cannot be empty."}, status=400)
+        stage = STAGES[state["stage"]]
+        engine = get_engine(state["backend"])
+        r = engine.evaluate_attack(text, stage["target"], stage["domain"], set(state["used"]), 200)
 
-    attack_result = score_lexical_attack(
-        attack_text=attack_text,
-        target_topic=target_topic,
-        target_word=target_word,
-        model_name=model_name,
-        turn_number=turn_number,
-        used_guesses=used_guesses,
-        enemy_max_hp=100,
-    )
+        if not r["valid"]:
+            return JsonResponse({"error": r.get("reason", "Invalid attack word.")}, status=400)
 
-    new_enemy_hp = max(0, enemy_hp - attack_result["damage"])
+        r = engine.resolve_damage(r, 200, state["hp"])
+        state["hp"] -= r["actual_damage"]
+        state["total_damage"] += r["actual_damage"]
+        state["turns"] += 1
+        state["used"].append(r["word"])
 
-    enemy_action = None
-    new_player_hp = player_hp
-    match_status = "active"
+        counter = 0 if state["hp"] == 0 else min(state["player_hp"], 8 + (state["turns"] % 5) * 2)
+        state["player_hp"] -= counter
+        state["status"] = "won" if state["hp"] == 0 else ("lost" if state["player_hp"] == 0 else "active")
 
-    if new_enemy_hp == 0:
-        match_status = "won"
-    else:
-        enemy_action = generate_enemy_counterattack(
-            turn_number=turn_number,
-            enemy_name=enemy_name,
-            domain=target_topic,
+        logs = request.session.get("trial_logs", [])
+        logs.append(
+            {
+                "backend": state["backend"],
+                "stage": state["stage"] + 1,
+                "domain": stage["domain"],
+                "target": stage["target"],
+                "answer": r["word"],
+                "turn": state["turns"],
+                "similarity": r["similarity"],
+                "relevance": r["relevance"],
+                "gate": r["domain_match_type"],
+                "domain_scores": json.dumps(r["domain_scores"]),
+                "damage": r["actual_damage"],
+                "latency_ms": r["latency_ms"],
+            }
         )
-        new_player_hp = max(0, player_hp - enemy_action["damage"])
-        if new_player_hp == 0:
-            match_status = "lost"
+        request.session["trial_logs"] = logs[-1000:]
+        request.session["battle"] = state
 
-    # Record finished matches to MatchHistory
-    if match_status in ("won", "lost"):
-        model_label = attack_result.get("model_used", "NLP").split()[0]
-        MatchHistory.objects.create(
-            player_name=player_name,
-            target_topic=f"{target_topic} ({target_word}) [{model_label}]",
-            turns_taken=turn_number,
-            total_damage_dealt=100 - new_enemy_hp,
-            score=new_player_hp * 10 + (100 if match_status == "won" else 0),
-            status=match_status,
+        if state["status"] != "active":
+            MatchHistory.objects.create(
+                player_name=state["name"],
+                target_topic=f"{state['backend']} | {stage['domain']} | {stage['target']}",
+                turns_taken=state["turns"],
+                total_damage_dealt=state["total_damage"],
+                score=state["player_hp"] * 10 + (100 if state["status"] == "won" else 0),
+                status=state["status"],
+            )
+
+        return JsonResponse(
+            {
+                "attack_result": public_result(r),
+                "player_hp": state["player_hp"],
+                "enemy_hp": state["hp"],
+                "turn_number": state["turns"],
+                "match_status": state["status"],
+                "enemy_action": {"damage": counter, "enemy_text": "Counterattack"} if counter else None,
+            }
         )
-
-    return JsonResponse(
-        {
-            "attack_result": attack_result,
-            "enemy_action": enemy_action,
-            "player_hp": new_player_hp,
-            "enemy_hp": new_enemy_hp,
-            "match_status": match_status,
-        }
-    )
-
-
-@require_POST
-def hint_endpoint(request):
-    """Provide a contextual lexical hint for the player."""
-    try:
-        payload = json.loads(request.body.decode("utf-8"))
-    except (json.JSONDecodeError, UnicodeDecodeError):
-        payload = {}
-
-    target_word = str(payload.get("target_word", "executive")).strip() or "executive"
-    domain = str(payload.get("target_topic", "Business")).strip() or "Business"
-    model_name = str(payload.get("model_name", "auto")).strip() or "auto"
-    used_guesses = payload.get("used_guesses", [])
-
-    hint_data = generate_hint(
-        target_word=target_word,
-        domain=domain,
-        used_guesses=used_guesses,
-        model_name=model_name,
-    )
-    return JsonResponse(hint_data)
+    except ValueError as e:
+        return JsonResponse({"error": str(e)}, status=400)
 
 
 @require_GET
-def stages_endpoint(request):
-    """Return all boss stages and model options as JSON."""
-    return JsonResponse(
-        {
-            "stages": BOSS_STAGES,
-            "domains": DOMAINS,
-            "models": get_available_models(),
-        }
-    )
+def leaderboard_page(request):
+    entries = MatchHistory.objects.exclude(status="active")[:20]
+    return render(request, "combat/leaderboard.html", {"leaderboard": entries})
 
 
 @require_GET
 def leaderboard_endpoint(request):
-    """Return top recorded matches as JSON."""
-    entries = list(
-        MatchHistory.objects.exclude(status="active").values(
-            "player_name",
-            "target_topic",
-            "turns_taken",
-            "score",
-            "status",
-            "created_at",
-        )[:10]
-    )
+    entries = list(MatchHistory.objects.exclude(status="active").values()[:20])
     return JsonResponse({"leaderboard": entries})
+
+
+@require_GET
+def export_endpoint(request):
+    rows = request.session.get("trial_logs", [])
+    out = io.StringIO(newline="")
+    if rows:
+        writer = csv.DictWriter(out, fieldnames=rows[0].keys())
+        writer.writeheader()
+        writer.writerows(rows)
+    response = HttpResponse(out.getvalue(), content_type="text/csv; charset=utf-8")
+    response["Content-Disposition"] = 'attachment; filename="trial_logs.csv"'
+    return response
+
+
+# Aliases for backward compatibility
+start_battle_endpoint = start_endpoint

@@ -106,16 +106,17 @@ class CombatAppTests(TestCase):
         self.assertEqual(len(data["leaderboard"]), 1)
         self.assertEqual(data["leaderboard"][0]["player_name"], "Champion")
 
-    def test_attack_endpoint_self_trained_backend(self):
+    def test_attack_endpoint_sbert_backend(self):
         payload = {
             "attack_text": "board of directors",
             "target_topic": "Business",
             "target_word": "executive",
             "enemy_name": "Corporate Titan",
-            "model_name": "self_trained",
+            "model_name": "sbert",
             "turn_number": 1,
             "player_hp": 100,
-            "enemy_hp": 100,
+            "enemy_hp": 180,
+            "enemy_max_hp": 180,
         }
         response = self.client.post(
             reverse("combat:attack"),
@@ -124,7 +125,31 @@ class CombatAppTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        self.assertIn("Self-Trained", data["attack_result"]["model_used"])
+        model_used = data["attack_result"]["model_used"]
+        self.assertTrue("SBERT" in model_used or "Semantic Lexical" in model_used)
+        self.assertTrue(data["attack_result"]["domain_allowed"])
+        self.assertGreater(data["attack_result"]["damage"], 0)
+
+    def test_attack_endpoint_fallback_backend(self):
+        payload = {
+            "attack_text": "board of directors",
+            "target_topic": "Business",
+            "target_word": "executive",
+            "enemy_name": "Corporate Titan",
+            "model_name": "fallback",
+            "turn_number": 1,
+            "player_hp": 100,
+            "enemy_hp": 180,
+            "enemy_max_hp": 180,
+        }
+        response = self.client.post(
+            reverse("combat:attack"),
+            data=json.dumps(payload),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn("Semantic Lexical", data["attack_result"]["model_used"])
         self.assertTrue(data["attack_result"]["domain_allowed"])
         self.assertGreater(data["attack_result"]["damage"], 0)
 

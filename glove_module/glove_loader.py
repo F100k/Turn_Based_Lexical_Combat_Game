@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 
 def load_glove_model(glove_file_path):
     """
@@ -23,9 +22,21 @@ def load_domain_corpus(csv_path="corpus/domain_docs.csv"):
     ฟังก์ชันสำหรับโหลดคอร์ปัสรูปแบบใหม่ที่เป็นตารางเอกสารรายโดเมน (จากของลูกเจี๊ยบ)
     """
     try:
+        import pandas as pd
         corpus_df = pd.read_csv(csv_path)
         print(f"Loaded domain corpus from {csv_path} ({len(corpus_df)} documents)")
         return corpus_df
+    except ImportError:
+        import csv
+        try:
+            with open(csv_path, "r", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                rows = list(reader)
+                print(f"Loaded domain corpus from {csv_path} ({len(rows)} documents via csv.DictReader)")
+                return rows
+        except FileNotFoundError:
+            print(f"[!] Warning: Not found '{csv_path}'. Please build the corpus first.")
+            return None
     except FileNotFoundError:
         print(f"[!] Warning: Not found '{csv_path}'. Please build the corpus first.")
         return None
