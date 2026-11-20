@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leaderboard — Lexical Arena</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a12;--surface:#131320;--surface2:#1a1a2e;--border:#252540;
+  --accent:#7c5cbf;--gold:#e8b84b;--text:#e8e6f8;--sub:#8886aa;
+  --player:#5ba4f5;--enemy:#f06b6b;--green:#52d68a;
+}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Outfit',system-ui,sans-serif;font-size:15px;line-height:1.6;
+  min-height:100vh;overflow-x:hidden;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 10% 90%, rgba(232,184,75,0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 35% at 90% 10%, rgba(124,92,191,0.06) 0%, transparent 70%);
+}
+
+/* ── NAV ── */
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2rem;height:54px;
+  background:rgba(19,19,32,0.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+}
+.nav-brand{
+  font-family:'Cinzel',serif;font-size:1.05rem;font-weight:700;letter-spacing:0.1em;
+  background:linear-gradient(120deg,var(--gold),#c084fc);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  text-decoration:none;
+}
+.nav-links{display:flex;gap:0.5rem;align-items:center}
+.nav-btn{
+  font-family:'Outfit',sans-serif;font-size:0.8rem;font-weight:600;
+  padding:0.35rem 0.9rem;border-radius:6px;cursor:pointer;
+  text-decoration:none;transition:all 0.18s;border:1px solid var(--border);
+  background:transparent;color:var(--sub);
+  display:inline-flex;align-items:center;gap:0.3em;
+}
+.nav-btn:hover{border-color:var(--accent);color:var(--text)}
+.nav-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ── LAYOUT ── */
+.page{
+  width:100%;max-width:1100px;margin:0 auto;
+  padding:2rem 2rem 4rem;
+  display:flex;flex-direction:column;gap:1.5rem;
+}
+
+/* ── HEADER ── */
+.page-header{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  flex-wrap:wrap;gap:1rem;
+}
+.page-title{
+  font-family:'Cinzel',serif;font-size:1.6rem;font-weight:700;letter-spacing:0.08em;
+  background:linear-gradient(120deg,var(--gold),#c084fc);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.page-sub{font-size:0.82rem;color:var(--sub);margin-top:0.2rem}
+
+/* ── TOP 3 PODIUM ── */
+.podium{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:1rem;
+}
+@media(max-width:650px){.podium{grid-template-columns:1fr}}
+
+.podium-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:1.5rem 1.25rem 1.25rem;
+  display:flex;flex-direction:column;align-items:center;gap:0.6rem;
+  position:relative;overflow:hidden;
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.podium-card:hover{transform:translateY(-3px)}
+
+/* rank-specific accents */
+.podium-card.rank-1{border-color:rgba(232,184,75,0.4);box-shadow:0 0 32px rgba(232,184,75,0.1)}
+.podium-card.rank-2{border-color:rgba(192,192,192,0.3);box-shadow:0 0 24px rgba(192,192,192,0.06)}
+.podium-card.rank-3{border-color:rgba(205,127,50,0.3);box-shadow:0 0 24px rgba(205,127,50,0.06)}
+
+/* glow behind medal */
+.podium-card::before{
+  content:'';position:absolute;top:-30px;left:50%;transform:translateX(-50%);
+  width:120px;height:120px;border-radius:50%;
+  pointer-events:none;opacity:0.12;
+}
+.podium-card.rank-1::before{background:var(--gold)}
+.podium-card.rank-2::before{background:#c0c0c0}
+.podium-card.rank-3::before{background:#cd7f32}
+
+.podium-medal{
+  font-size:2.4rem;line-height:1;
+  animation:medal-float 3.5s ease-in-out infinite;
+}
+.podium-card.rank-2 .podium-medal{animation-delay:0.5s}
+.podium-card.rank-3 .podium-medal{animation-delay:1s}
+@keyframes medal-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+.podium-rank{
+  font-family:'Cinzel',serif;font-size:0.7rem;font-weight:700;
+  letter-spacing:0.14em;text-transform:uppercase;
+}
+.podium-card.rank-1 .podium-rank{color:var(--gold)}
+.podium-card.rank-2 .podium-rank{color:#c0c0c0}
+.podium-card.rank-3 .podium-rank{color:#cd7f32}
+
+.podium-name{
+  font-family:'Cinzel',serif;font-size:1rem;font-weight:700;
+  color:var(--text);text-align:center;
+}
+.podium-topic{
+  font-size:0.75rem;color:var(--sub);
+  background:var(--surface2);border:1px solid var(--border);
+  padding:0.15rem 0.6rem;border-radius:99px;
+}
+.podium-score{
+  font-size:1.5rem;font-weight:600;
+  font-family:'Cinzel',serif;
+}
+.podium-card.rank-1 .podium-score{color:var(--gold)}
+.podium-card.rank-2 .podium-score{color:#c0c0c0}
+.podium-card.rank-3 .podium-score{color:#cd7f32}
+
+.podium-meta{font-size:0.75rem;color:var(--sub);display:flex;gap:0.75rem}
+.podium-meta span{display:flex;align-items:center;gap:0.25rem}
+
+/* badge */
+.badge{display:inline-flex;align-items:center;gap:0.3rem;padding:0.15rem 0.6rem;border-radius:99px;font-size:0.72rem;font-weight:600}
+.badge-won{background:rgba(82,214,138,0.15);color:var(--green);border:1px solid rgba(82,214,138,0.3)}
+.badge-lost{background:rgba(240,107,107,0.15);color:var(--enemy);border:1px solid rgba(240,107,107,0.3)}
+
+/* ── EMPTY PODIUM SLOT ── */
+.podium-empty{opacity:0.35}
+.podium-empty .podium-name{color:var(--sub);font-family:'Outfit',sans-serif;font-size:0.85rem;font-weight:400}
+.podium-empty .podium-score{color:var(--sub);font-size:1rem}
+
+/* ── TABLE ── */
+.panel{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:1.25rem 1.5rem;
+}
+.panel-title{
+  font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.14em;
+  color:var(--sub);padding-bottom:0.65rem;margin-bottom:0.9rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+}
+
+table{width:100%;border-collapse:collapse}
+thead th{
+  font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;
+  color:var(--sub);padding:0.5rem 0.9rem;text-align:left;
+  border-bottom:1px solid var(--border);
+}
+tbody tr{
+  transition:background 0.15s;
+  animation:row-in 0.3s ease both;
+}
+tbody tr:nth-child(1){animation-delay:0.05s}
+tbody tr:nth-child(2){animation-delay:0.1s}
+tbody tr:nth-child(3){animation-delay:0.15s}
+tbody tr:nth-child(4){animation-delay:0.2s}
+tbody tr:nth-child(5){animation-delay:0.25s}
+tbody tr:nth-child(n+6){animation-delay:0.3s}
+@keyframes row-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+tbody tr:hover{background:var(--surface2)}
+tbody td{
+  padding:0.65rem 0.9rem;font-size:0.875rem;
+  border-bottom:1px solid rgba(37,37,64,0.5);color:var(--text);
+}
+tbody tr:last-child td{border-bottom:none}
+
+.rank-col{font-family:'Cinzel',serif;font-weight:700;color:var(--sub);font-size:0.95rem}
+.rank-col.r1{color:var(--gold)}
+.rank-col.r2{color:#c0c0c0}
+.rank-col.r3{color:#cd7f32}
+
+.player-cell{font-weight:600}
+.score-cell{font-family:'Cinzel',serif;font-weight:700;color:var(--accent)}
+
+/* score bar */
+.score-bar-wrap{display:flex;align-items:center;gap:0.6rem}
+.score-bar{flex:1;height:5px;background:var(--surface2);border-radius:99px;overflow:hidden;max-width:100px}
+.score-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),#c084fc);transition:width 0.8s cubic-bezier(.4,0,.2,1)}
+
+/* ── EMPTY STATE ── */
+.empty-state{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1rem;padding:4rem 2rem;text-align:center;
+}
+.empty-icon{font-size:3.5rem;animation:empty-float 3s ease-in-out infinite}
+@keyframes empty-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.empty-title{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--text)}
+.empty-sub{font-size:0.85rem;color:var(--sub);max-width:300px}
+.empty-cta{
+  display:inline-block;margin-top:0.5rem;
+  font-family:'Outfit',sans-serif;font-size:0.875rem;font-weight:600;
+  padding:0.6rem 1.4rem;border-radius:8px;cursor:pointer;
+  background:var(--accent);color:#fff;text-decoration:none;border:none;
+  transition:all 0.18s;
+}
+.empty-cta:hover{background:#9d82e0;box-shadow:0 0 20px rgba(124,92,191,0.4)}
+
+/* ── STATS ROW ── */
+.stats-row{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1rem;
+}
+@media(max-width:600px){.stats-row{grid-template-columns:1fr 1fr}}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:1rem 1.25rem;display:flex;flex-direction:column;gap:0.2rem;
+}
+.stat-label{font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--sub)}
+.stat-value{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:var(--text)}
+.stat-value.gold{color:var(--gold)}
+.stat-value.green{color:var(--green)}
+.stat-value.purple{color:#c084fc}
+
+@media(max-width:768px){.page{padding:1.25rem 1rem 3rem}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="{% url 'combat:arena' %}">⚔ Lexical Arena</a>
+  <div class="nav-links">
+    <a class="nav-btn" href="{% url 'combat:arena' %}">Battle</a>
+    <a class="nav-btn active" href="{% url 'combat:leaderboard_page' %}">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right:0.3em;vertical-align:-1px">
+        <path d="M12 2l2.09 6.26H20l-5 3.64 1.91 5.84L12 14.27l-4.91 3.47L9 11.9 4 8.26h5.91z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      </svg>Leaderboard
+    </a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <div class="page-title">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right:0.4em;vertical-align:-3px;flex-shrink:0">
+          <path d="M12 2l2.09 6.26H20l-5 3.64 1.91 5.84L12 14.27l-4.91 3.47L9 11.9 4 8.26h5.91z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>Hall of Champions
+      </div>
+      <div class="page-sub">The mightiest wordsmiths who conquered the Lexical Arena</div>
+    </div>
+    <a class="empty-cta" href="{% url 'combat:arena' %}">⚔ Enter Battle</a>
+  </div>
+
+  {% if leaderboard %}
+
+  <!-- STATS SUMMARY -->
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right:0.3em;vertical-align:-1px">
+          <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.75"/>
+          <path d="M8 12h8M12 8v8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+        </svg>Total Matches
+      </div>
+      <div class="stat-value gold" id="stat-total">{{ leaderboard|length }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right:0.3em;vertical-align:-1px">
+          <path d="M14.5 2.5L9 9h4.5L9.5 21.5l9-12H14L18 2.5H14.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>Victories
+      </div>
+      <div class="stat-value green" id="stat-wins">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right:0.3em;vertical-align:-1px">
+          <path d="M12 2l2.09 6.26H20l-5 3.64 1.91 5.84L12 14.27l-4.91 3.47L9 11.9 4 8.26h5.91z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>Top Score
+      </div>
+      <div class="stat-value purple" id="stat-top">—</div>
+    </div>
+  </div>
+
+  <!-- PODIUM top 3 -->
+  <div class="podium" id="podium"></div>
+
+  <!-- FULL TABLE -->
+  <div class="panel">
+    <div class="panel-title">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right:0.4em;vertical-align:-1px">
+        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M9 12h6M9 16h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>Full Rankings
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Champion</th>
+          <th>Topic</th>
+          <th>Turns</th>
+          <th>Score</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        {% for entry in leaderboard %}
+        <tr>
+          <td class="rank-col {% if forloop.counter == 1 %}r1{% elif forloop.counter == 2 %}r2{% elif forloop.counter == 3 %}r3{% endif %}">
+            {% if forloop.counter == 1 %}🥇{% elif forloop.counter == 2 %}🥈{% elif forloop.counter == 3 %}🥉{% else %}{{ forloop.counter }}{% endif %}
+          </td>
+          <td class="player-cell">{{ entry.player_name }}</td>
+          <td><span style="font-size:0.8rem;color:var(--sub)">{{ entry.target_topic }}</span></td>
+          <td style="color:var(--sub)">{{ entry.turns_taken }}</td>
+          <td class="score-cell">
+            <div class="score-bar-wrap">
+              <span>{{ entry.score }}</span>
+              <div class="score-bar">
+                <div class="score-bar-fill" data-score="{{ entry.score }}"></div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge-{{ entry.status }}">{% if entry.status == 'won' %}⚔ Won{% else %}💀 Lost{% endif %}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% else %}
+
+  <!-- EMPTY STATE -->
+  <div class="panel">
+    <div class="empty-state">
+      <div class="empty-icon">⚔</div>
+      <div class="empty-title">No Champions Yet</div>
+      <div class="empty-sub">Be the first warrior to finish a battle and etch your name into the Hall of Champions.</div>
+      <a class="empty-cta" href="{% url 'combat:arena' %}">Start Your Legend</a>
+    </div>
+  </div>
+
+  {% endif %}
+
+</div>
+
+<script>
+/* ── Build podium from Django data ── */
+const rawEntries = [
+  {% for entry in leaderboard %}
+  {
+    name:   "{{ entry.player_name|escapejs }}",
+    topic:  "{{ entry.target_topic|escapejs }}",
+    score:  {{ entry.score }},
+    turns:  {{ entry.turns_taken }},
+    status: "{{ entry.status }}"
+  }{% if not forloop.last %},{% endif %}
+  {% endfor %}
+];
+
+/* Stats */
+if (rawEntries.length) {
+  const wins    = rawEntries.filter(e => e.status === "won").length;
+  const topScore = Math.max(...rawEntries.map(e => e.score));
+  const statWins = document.getElementById("stat-wins");
+  const statTop  = document.getElementById("stat-top");
+  if (statWins) statWins.textContent = wins;
+  if (statTop)  statTop.textContent  = topScore;
+}
+
+/* Score bar widths — relative to max */
+const maxScore = rawEntries.length ? Math.max(...rawEntries.map(e => e.score), 1) : 1;
+document.querySelectorAll(".score-bar-fill").forEach(el => {
+  const s = parseInt(el.dataset.score) || 0;
+  setTimeout(() => { el.style.width = (s / maxScore * 100) + "%" }, 100);
+});
+
+/* Podium */
+const medals = ["🥇","🥈","🥉"];
+const rankNames = ["1st Place","2nd Place","3rd Place"];
+const podium = document.getElementById("podium");
+if (podium) {
+  for (let i = 0; i < 3; i++) {
+    const e = rawEntries[i];
+    const card = document.createElement("div");
+    card.className = `podium-card rank-${i+1}${e ? "" : " podium-empty"}`;
+    if (e) {
+      card.innerHTML = `
+        <div class="podium-medal">${medals[i]}</div>
+        <div class="podium-rank">${rankNames[i]}</div>
+        <div class="podium-name">${e.name}</div>
+        <div class="podium-topic">${e.topic}</div>
+        <div class="podium-score">${e.score}</div>
+        <div class="podium-meta">
+          <span>🔄 ${e.turns} turns</span>
+          <span class="badge badge-${e.status}">${e.status === "won" ? "⚔ Won" : "💀 Lost"}</span>
+        </div>
+      `;
+    } else {
+      card.innerHTML = `
+        <div class="podium-medal" style="opacity:0.3">${medals[i]}</div>
+        <div class="podium-rank">${rankNames[i]}</div>
+        <div class="podium-name">Awaiting Champion</div>
+        <div class="podium-score">—</div>
+      `;
+    }
+    podium.appendChild(card);
+  }
+}
+</script>
+</body>
+</html>
